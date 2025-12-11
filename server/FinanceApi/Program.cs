@@ -3,7 +3,7 @@ using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// חיבור ל-Neon
+// חיבור ל-Neon (הקונקשן סטרינג יגיע מ־Environment Variable ב־Render)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
@@ -11,7 +11,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Finance API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "Finance API", 
+        Version = "v1" 
+    });
 });
 
 // CORS לאנגולר
@@ -41,6 +45,7 @@ app.UseCors("AllowAngular");
 app.MapGet("/api/test", async (AppDbContext db) =>
     await db.Test.ToListAsync());
 
+// Endpoint בריאות לבדיקה מהירה
 app.MapGet("/api/health", () => "OK");
 
 app.Run();
