@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { TestService } from './test.service';
 import { NgFor, NgIf } from '@angular/common';
+import { TestService, TestUser } from './test.service';
 
 @Component({
   selector: 'app-root',
@@ -12,15 +12,15 @@ import { NgFor, NgIf } from '@angular/common';
   styleUrls: ['./app.scss']
 })
 export class App {
-  protected readonly title = signal('my-app');
-  users: any[] = [];
+  title = signal('my-app');
+  users = signal<TestUser[]>([]);
 
   constructor(private service: TestService) {}
 
   ngOnInit() {
     this.service.getUsers().subscribe(data => {
-      this.users = data;
-      console.log('Users:', this.users);
+      this.users.set(data);   // עדכון ה-signal עם הנתונים מהשירות
+      console.log('Users:', this.users());
     });
   }
 }

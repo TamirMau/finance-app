@@ -236,12 +236,12 @@
     <div class="divider" role="separator" aria-label="Divider"></div>
 
   </div>
-  
+   
 </main>
+<h1>{{ title() }}</h1>
+<h2>Users from Neon DB</h2>
 
-
-    <h2>Users from Neon DB</h2>
-<table *ngIf="users && users.length > 0" border="1" cellpadding="5">
+<table *ngIf="users().length > 0" border="1" cellpadding="5">
   <thead>
     <tr>
       <th>ID</th>
@@ -250,7 +250,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let user of users">
+    <tr *ngFor="let user of users()">
       <td>{{ user.id }}</td>
       <td>{{ user.username }}</td>
       <td>{{ user.email }}</td>
@@ -258,13 +258,11 @@
   </tbody>
 </table>
 
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<p *ngIf="users().length === 0">No users found...</p>
+
+<router-outlet />
+
 
 
 <router-outlet />
+
