@@ -682,11 +682,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\my-angular-app\\my-app\\FinanceApi\\FinanceApi.csproj",
+      "projectUniqueName": "C:\\my-angular-app\\my-app\\server\\FinanceApi\\FinanceApi.csproj",
       "projectName": "FinanceApi",
-      "projectPath": "C:\\my-angular-app\\my-app\\FinanceApi\\FinanceApi.csproj",
+      "projectPath": "C:\\my-angular-app\\my-app\\server\\FinanceApi\\FinanceApi.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\my-angular-app\\my-app\\FinanceApi\\obj\\",
+      "outputPath": "C:\\my-angular-app\\my-app\\server\\FinanceApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"

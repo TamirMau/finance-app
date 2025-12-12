@@ -10,7 +10,7 @@ export interface TestUser {
 
 @Injectable({ providedIn: 'root' })
 export class TestService {
-  private baseUrl = 'https://finance-api-uh2s.onrender.com/api';
+  private baseUrl = 'https://finance-api-tccc.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 
