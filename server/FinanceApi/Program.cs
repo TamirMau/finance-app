@@ -33,7 +33,7 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API for Finance Management Application"
     });
-    
+
     // Add JWT authentication to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -43,7 +43,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-    
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -61,14 +61,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // CORS
-var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>() 
+var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>()
     ?? Array.Empty<string>();
 
 builder.Services.AddCors(options =>
 {
     if (builder.Environment.IsDevelopment())
     {
-        // In development, allow any localhost origin dynamically
         options.AddPolicy("AllowAngularApp", policy =>
         {
             policy.SetIsOriginAllowed(origin =>
@@ -77,8 +76,7 @@ builder.Services.AddCors(options =>
                 try
                 {
                     var uri = new Uri(origin);
-                    // Allow localhost and 127.0.0.1 with any port
-                    return uri.Scheme == "http" && 
+                    return uri.Scheme == "http" &&
                            (uri.Host == "localhost" || uri.Host == "127.0.0.1");
                 }
                 catch
@@ -93,7 +91,6 @@ builder.Services.AddCors(options =>
     }
     else
     {
-        // In production, use specific origins from configuration
         options.AddPolicy("AllowAngularApp", policy =>
         {
             policy.WithOrigins(allowedOrigins)
@@ -105,7 +102,7 @@ builder.Services.AddCors(options =>
 });
 
 // JWT Authentication
-var jwtSecret = builder.Configuration["JWT:Secret"] 
+var jwtSecret = builder.Configuration["JWT:Secret"]
     ?? "YourSuperSecretKeyForDevelopmentOnly-Minimum32Characters";
 var jwtIssuer = builder.Configuration["JWT:Issuer"] ?? "FinanceApp";
 var jwtAudience = builder.Configuration["JWT:Audience"] ?? "FinanceAppUsers";
@@ -132,16 +129,14 @@ var storageType = builder.Configuration["Storage:Type"] ?? "Json";
 
 if (storageType.Equals("Database", StringComparison.OrdinalIgnoreCase))
 {
-    // PostgreSQL Connection
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<FinanceDbContext>(options =>
         options.UseNpgsql(connectionString));
-    
+
     builder.Services.AddScoped<IStorageService, DbStorageService>();
 }
 else
 {
-    // Default to JSON storage
     builder.Services.AddSingleton<JsonStorageService>();
     builder.Services.AddSingleton<IStorageService>(sp => sp.GetRequiredService<JsonStorageService>());
 }
@@ -171,17 +166,7 @@ builder.Services.AddScoped<IBankStatementParserService, BankStatementParserServi
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Finance API v1");
-        c.RoutePrefix = "swagger";
-    });
-}
-
+// Middleware pipeline
 app.UseCors("AllowAngularApp");
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseAuthentication();
@@ -194,21 +179,33 @@ app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.Health
     Predicate = check => check.Tags.Contains("database")
 });
 app.MapHealthChecks("/health/live");
+app.MapHealthChecks("/healthz"); // תואם ל-Render
+
+// Root endpoint
+app.MapGet("/", () => Results.Ok("Finance API is running!"));
+
+// Swagger גם ב-Production
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Finance API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.MapControllers();
 
 // הדפסה של ה-URL של Swagger
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
-var port = "5001"; // Default port from launchSettings.json sslPort
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 
-// Log storage type
 var currentStorageType = app.Configuration["Storage:Type"] ?? "Json";
-var storageTypeInfo = currentStorageType.Equals("Database", StringComparison.OrdinalIgnoreCase) 
-    ? "🗄️ Database storage (PostgreSQL)" 
+var storageTypeInfo = currentStorageType.Equals("Database", StringComparison.OrdinalIgnoreCase)
+    ? "🗄️ Database storage (PostgreSQL)"
     : "📄 JSON storage";
+
 logger.LogWarning("💾 Storage: {StorageType}", storageTypeInfo);
 logger.LogWarning("🚀 FinanceApi is running!");
-logger.LogWarning("📖 Swagger UI available at: \u001b[32mhttps://localhost:{Port}/swagger\u001b[0m".Replace("{Port}", port));
-logger.LogWarning("🌐 API Base URL: \u001b[32mhttps://localhost:{Port}\u001b[0m".Replace("{Port}", port));
+logger.LogWarning("📖 Swagger UI available at: https://localhost:{Port}/swagger".Replace("{Port}", port));
+logger.LogWarning("🌐 API Base URL: https://localhost:{Port}".Replace("{Port}", port));
 
 app.Run();
