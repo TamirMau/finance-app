@@ -1,0 +1,184 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  background-color: var(--color-background-lighter);
+  direction: rtl;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.register-card {
+  width: 100%;
+  max-width: 25rem; // 400px
+  background-color: var(--color-bg);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  padding: var(--spacing-lg);
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+mat-card-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  padding: 0 !important;
+  
+  mat-card-title {
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    margin: 0;
+  }
+}
+
+mat-card-content {
+  padding: 0 !important;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.form-field {
+  margin-bottom: var(--spacing-md);
+  
+  .form-label {
+    display: block;
+    font-size: var(--font-size-small);
+    color: var(--color-text);
+    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-family);
+    margin-bottom: 0.375rem;
+  }
+  
+  .form-error {
+    color: var(--color-error);
+    font-size: var(--font-size-small);
+    font-family: var(--font-family);
+    margin-top: 0.25rem;
+    display: block;
+  }
+}
+
+// General error message (from API)
+.general-error {
+  background-color: rgba(244, 67, 54, 0.1);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-small);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+}
+
+// Register Button - Primary blue
+::ng-deep {
+  button[type="submit"] {
+    width: 100%;
+    height: var(--field-height);
+    background-color: var(--color-primary) !important;
+    color: var(--color-white) !important;
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-family);
+    border-radius: var(--radius-small);
+    border: none;
+    transition: all 120ms ease;
+    margin-top: var(--spacing-md);
+    cursor: pointer;
+    
+    &:hover:not(:disabled) {
+      background-color: var(--color-primary-dark) !important;
+      box-shadow: var(--shadow-md);
+    }
+    
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background-color: var(--color-disabled) !important;
+    }
+  }
+}
+
+mat-card-footer {
+  text-align: center;
+  padding: var(--spacing-md) 0 0 0 !important;
+  margin-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-md) !important;
+  
+  p {
+    font-size: var(--font-size-small);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family);
+    margin: 0;
+    
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: var(--font-weight-semibold);
+      font-family: var(--font-family);
+      transition: color 120ms ease;
+      
+      &:hover {
+        color: var(--color-primary-dark);
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .register-container {
+    padding: var(--spacing-sm);
+  }
+  
+  .register-card {
+    max-width: 90%;
+    padding: var(--spacing-md);
+  }
+  
+  ::ng-deep button[type="submit"] {
+    width: 100%;
+    height: 2.5rem; // 40px on mobile
+    font-size: var(--font-size-small);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .register-container,
+  .register-card {
+    animation: none;
+  }
+}
+

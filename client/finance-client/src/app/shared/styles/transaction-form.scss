@@ -1,0 +1,252 @@
+// Shared styles for transaction forms (Income and Expense)
+.transaction-form-card {
+  margin-bottom: var(--spacing-md);
+  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  
+  mat-card-header {
+    padding: 0 0 var(--spacing-lg) 0 !important;
+    margin-bottom: var(--spacing-lg);
+    
+    mat-card-title {
+      font-size: var(--font-size-h2);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-primary);
+      font-family: var(--font-family);
+    }
+  }
+  
+  mat-card-content {
+    padding: 0 !important;
+  }
+}
+
+.transaction-form {
+  .form-row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    align-items: flex-start;
+    width: 100%;
+    
+    .form-field {
+      flex: 1 1 0;
+      margin-bottom: 0;
+      min-width: 0;
+      width: auto;
+    }
+    
+    .form-field-half {
+      flex: 0 0 150px !important;
+      width: 150px !important;
+      max-width: 150px !important;
+      min-width: 120px !important;
+    }
+    
+    .form-field.full-width {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+    
+    @media (max-width: 1200px) {
+      gap: var(--spacing-sm);
+      
+      .form-field {
+        min-width: 120px;
+      }
+      
+      .form-field-half {
+        flex: 0 0 120px !important;
+        width: 120px !important;
+        max-width: 120px !important;
+        min-width: 100px !important;
+      }
+    }
+    
+    @media (max-width: 1000px) {
+      gap: var(--spacing-sm);
+      
+      .form-field {
+        min-width: 100px;
+      }
+      
+      .form-field-half {
+        flex: 0 0 120px !important;
+        width: 120px !important;
+        max-width: 120px !important;
+        min-width: 80px !important;
+      }
+    }
+    
+    @media (max-width: 900px) {
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      
+      .form-field {
+        flex: 1 1 calc(50% - var(--spacing-md) / 2);
+        min-width: calc(50% - var(--spacing-md) / 2);
+      }
+      
+      .form-field-half {
+        flex: 0 0 auto !important;
+        width: calc(33.333% - var(--spacing-md) / 3) !important;
+        max-width: calc(33.333% - var(--spacing-md) / 3) !important;
+        min-width: calc(33.333% - var(--spacing-md) / 3) !important;
+      }
+      
+      .form-field.full-width {
+        flex: 1 1 100%;
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      flex-direction: column;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      
+      .form-field {
+        min-width: 100%;
+        flex: 1 1 100%;
+        width: 100%;
+      }
+      
+      .form-field-half {
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+      
+      .form-field.full-width {
+        width: 100%;
+      }
+    }
+  }
+  
+  .form-field {
+    margin-bottom: var(--spacing-md);
+    
+    .form-label {
+      display: block;
+      font-size: var(--font-size-small);
+      color: var(--color-text-primary);
+      font-weight: var(--font-weight-semibold);
+      font-family: var(--font-family);
+      margin-bottom: var(--spacing-sm);
+      white-space: nowrap;
+    }
+    
+    .form-error {
+      color: var(--color-error);
+      font-size: var(--font-size-small);
+      font-family: var(--font-family);
+      margin-top: 0.25rem;
+      display: block;
+    }
+    
+    .custom-input,
+    .custom-select {
+      height: var(--field-height);
+      min-height: var(--field-height);
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-body);
+      font-family: var(--font-family);
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      box-sizing: border-box;
+      
+      &:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+      }
+    }
+    
+    .custom-select {
+      min-width: 0;
+    }
+    
+    textarea.custom-input {
+      height: auto;
+      min-height: 5rem;
+      resize: vertical;
+    }
+    
+    // Override width when inside form-row
+    .form-row & {
+      width: auto;
+    }
+    
+    &.full-width {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+    
+    button {
+      height: var(--button-height);
+      min-height: var(--button-height);
+      padding: 0 var(--spacing-lg);
+      font-family: var(--font-family);
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-semibold);
+      
+      &[type="button"] {
+        background-color: var(--color-background-light) !important;
+        color: var(--color-text-primary) !important;
+        border: 1px solid var(--color-border) !important;
+        
+        &:hover {
+          background-color: #E5E7EB !important;
+        }
+      }
+      
+      &[type="submit"] {
+        background-color: var(--color-primary) !important;
+        color: var(--color-white) !important;
+        
+        &:hover:not(:disabled) {
+          background-color: var(--color-primary-dark) !important;
+        }
+        
+        &:disabled {
+          background-color: var(--color-disabled) !important;
+          opacity: 0.6;
+        }
+      }
+    }
+    
+    @media (max-width: 600px) {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Alias classes for backward compatibility
+.expense-form-card,
+.income-form-card {
+  @extend .transaction-form-card;
+}
+
+.expense-form,
+.income-form {
+  @extend .transaction-form;
+}
+

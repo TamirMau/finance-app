@@ -1,0 +1,33 @@
+<div class="month-year-dialog">
+  <h2 mat-dialog-title>
+    <mat-icon>calendar_month</mat-icon>
+    בחר חודש ושנה
+  </h2>
+
+  <mat-dialog-content>
+    <p class="info-text">
+      כל העסקאות בקובץ ייכנסו לחודש שנבחר. תאריכי החיוב המקוריים יישמרו לצורך הצגה.
+    </p>
+
+    <div class="form-fields">
+      <mat-form-field appearance="outline" class="month-year-field">
+        <mat-label>חודש ושנה</mat-label>
+        <mat-select [(ngModel)]="selectedMonthYear">
+          <mat-option *ngFor="let option of monthYearOptions" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" class="cancel-button">
+      ביטול
+    </button>
+    <button mat-raised-button color="primary" (click)="onConfirm()" class="confirm-button">
+      אישור
+    </button>
+  </mat-dialog-actions>
+</div>
+

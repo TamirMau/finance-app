@@ -1,0 +1,113 @@
+<div class="settings-container">
+  <h1>הגדרות אישיות</h1>
+  
+  <!-- User Profile Section -->
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>person</mat-icon>
+        פרטי משתמש
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="user-info" *ngIf="currentUser(); else noUser">
+        <div class="info-row">
+          <span class="label">שם משתמש:</span>
+          <span class="value">{{ currentUser()?.username }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">אימייל:</span>
+          <span class="value">{{ currentUser()?.email }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">תפקיד:</span>
+          <span class="value">{{ currentUser()?.role }}</span>
+        </div>
+      </div>
+      <ng-template #noUser>
+        <p class="no-user-message">לא נטען מידע משתמש</p>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+  
+  <!-- Date Range Settings -->
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>date_range</mat-icon>
+        טווח חישוב עסקאות
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="settingsForm">
+        <div class="radio-group">
+          <mat-radio-group formControlName="dateRangeType" (change)="onDateRangeTypeChange($event)">
+            <mat-radio-button value="month-start" name="dateRangeType" class="radio-option">
+              <div class="option-content">
+                <div class="option-title">מתחילת החודש</div>
+                <div class="option-description">מה-1 לחודש ועד לתאריך האחרון באותו חודש</div>
+              </div>
+            </mat-radio-button>
+            <mat-radio-button value="month-10th" name="dateRangeType" class="radio-option">
+              <div class="option-content">
+                <div class="option-title">מהעשירי לחודש</div>
+                <div class="option-description">מה-10 לחודש ועד ל-9 בחודש שאחריו</div>
+              </div>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        
+        <div class="date-range-preview">
+          <mat-icon>info</mat-icon>
+          <div class="preview-content">
+            <strong>טווח תאריכים נבחר:</strong>
+            <span class="date-range-value">{{ dateRangeString() }}</span>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  
+  <!-- Display Preferences -->
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>visibility</mat-icon>
+        העדפות תצוגה
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="settingsForm">
+        <div class="checkbox-group">
+          <mat-checkbox formControlName="showHalves" class="checkbox-option">
+            <div class="option-content">
+              <div class="option-title">הצג מחציות</div>
+              <div class="option-description">הצג עמודת מחציות בטבלת ההוצאות וכרטיס סיכום מחציות</div>
+            </div>
+          </mat-checkbox>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  
+  <!-- Actions -->
+  <div class="actions-section">
+    <button mat-raised-button 
+            color="primary" 
+            (click)="onSaveSettings()" 
+            [disabled]="saving() || !settingsForm.valid"
+            class="save-button">
+      <mat-icon>{{ saving() ? 'hourglass_empty' : 'save' }}</mat-icon>
+      <span>{{ saving() ? 'שומר...' : 'שמור הגדרות' }}</span>
+    </button>
+    
+    <button mat-stroked-button 
+            color="warn" 
+            (click)="resetSettings()"
+            class="reset-button">
+      <mat-icon>restore</mat-icon>
+      <span>איפוס להגדרות ברירת מחדל</span>
+    </button>
+  </div>
+</div>
+

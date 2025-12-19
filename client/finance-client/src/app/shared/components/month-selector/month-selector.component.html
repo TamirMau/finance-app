@@ -1,0 +1,18 @@
+<div class="month-selector-container">
+  <label class="form-label">בחר חודש</label>
+  <select 
+    [ngModel]="selectedMonthIndex()" 
+    (ngModelChange)="onMonthChangeSelect($event)"
+    class="custom-select">
+    <option 
+      *ngFor="let month of availableMonths(); let i = index" 
+      [value]="i.toString()">
+      {{ formatMonth(month) }}<span *ngIf="isCurrentRangeMonth(month)"> (נוכחי)</span>
+    </option>
+  </select>
+  <div class="date-range-display">
+    <span class="label">טווח תאריכים:</span>
+    <span class="value">{{ dateRangeString() }}</span>
+  </div>
+</div>
+

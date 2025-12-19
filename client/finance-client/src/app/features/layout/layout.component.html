@@ -1,0 +1,87 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav 
+    #sidenav 
+    [mode]="isMobile ? 'over' : 'side'" 
+    [opened]="sidenavOpened"
+    class="sidenav"
+    (closedStart)="closeSidenavOnMobile()">
+    <div class="sidenav-header">
+      <h2>מערכת כספים</h2>
+    </div>
+    <mat-nav-list class="sidenav-list">
+      <a 
+        mat-list-item 
+        routerLink="/dashboard" 
+        routerLinkActive="active"
+        class="menu-item-dashboard"
+        (click)="closeSidenavOnMobile()">
+        <mat-icon>dashboard</mat-icon>
+        <span>דשבורד</span>
+      </a>
+      <a 
+      mat-list-item 
+      routerLink="/bank-statements" 
+      routerLinkActive="active"
+      class="menu-item-bank-statements"
+      (click)="closeSidenavOnMobile()">
+      <mat-icon>account_balance</mat-icon>
+      <span>תנועות בחשבון</span>
+    </a>
+      <a 
+        mat-list-item 
+        routerLink="/transactions/incomes" 
+        routerLinkActive="active"
+        class="menu-item-transactions-incomes"
+        (click)="closeSidenavOnMobile()">
+        <mat-icon>trending_up</mat-icon>
+        <span>הכנסות</span>
+      </a>
+      <a 
+        mat-list-item 
+        routerLink="/transactions/expenses" 
+        routerLinkActive="active"
+        class="menu-item-transactions-expenses"
+        (click)="closeSidenavOnMobile()">
+        <mat-icon>trending_down</mat-icon>
+        <span>הוצאות</span>
+      </a>
+      <a 
+        mat-list-item 
+        routerLink="/categories" 
+        routerLinkActive="active"
+        class="menu-item-categories"
+        (click)="closeSidenavOnMobile()">
+        <mat-icon>category</mat-icon>
+        <span>קטגוריות</span>
+      </a>
+      <a 
+        mat-list-item 
+        routerLink="/settings" 
+        routerLinkActive="active"
+        class="menu-item-settings"
+        (click)="closeSidenavOnMobile()">
+        <mat-icon>settings</mat-icon>
+        <span>הגדרות</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="toolbar">
+      <button mat-icon-button (click)="toggleSidenav()" class="menu-button">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="spacer"></span>
+      <div class="user-info" *ngIf="currentUser">
+        <span class="username">{{ currentUser.username }}</span>
+      </div>
+      <button mat-icon-button (click)="logout()" class="logout-button" matTooltip="התנתק">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

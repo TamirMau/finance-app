@@ -1,0 +1,50 @@
+<div class="filters-section">
+  <div class="filters-row">
+    <div class="form-field search-field">
+      <label class="form-label">חיפוש</label>
+      <div class="search-input-wrapper">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input 
+          type="search"
+          [value]="searchTerm()"
+          (input)="onSearchInput($any($event.target).value)"
+          placeholder="חפש לפי קטגוריה, בית עסק, מקור, הערות, סכום או מספר כרטיס"
+          class="custom-input search-input">
+      </div>
+    </div>
+    
+    <div class="form-field category-field">
+      <label class="form-label">קטגוריה</label>
+      <select 
+        [ngModel]="selectedCategoryFilter() ?? ''" 
+        (ngModelChange)="onCategorySelect($event)" 
+        class="custom-select"
+        [disabled]="!hasCategories()">
+        <option value="">כל הקטגוריות</option>
+        <option *ngFor="let category of filteredCategories()" [value]="category.id">
+          {{ category.name }}
+        </option>
+      </select>
+      <div class="no-categories-message" *ngIf="!hasCategories()">
+        לא נמצאו קטגוריות לחיפוש
+      </div>
+    </div>
+    
+    <button 
+      type="button" 
+      (click)="onClearFilters()" 
+      class="clear-filters-button"
+      [disabled]="!searchTerm() && !selectedCategoryFilter()"
+      [attr.aria-label]="'נקה פילטרים'">
+      <svg class="filter-clear-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Filter funnel shape -->
+        <path d="M4 6h16M4 6l2 4h12l2-4M6 10v6M18 10v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- X badge circle in top right -->
+        <circle cx="19" cy="5" r="3.5" fill="currentColor"/>
+        <!-- X mark inside circle -->
+        <path d="M17.5 3.5l3 3M20.5 3.5l-3 3" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+

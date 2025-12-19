@@ -1,0 +1,279 @@
+<div class="transaction-edit-dialog">
+  <h2 mat-dialog-title>עריכת עסקה</h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="transaction-form">
+      <!-- Income Form -->
+      <ng-container *ngIf="isIncome">
+        <!-- Row 1: Date and Category -->
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">תאריך הכנסה *</label>
+            <input 
+              [type]="getDateInputType('transactionDate')"
+              [readOnly]="getDateReadOnly('transactionDate')"
+              formControlName="transactionDate" 
+              required
+              (change)="onDatePickerChange($event, 'transactionDate')"
+              (click)="onDateInputClick($event)"
+              class="custom-input">
+            <div class="form-error" *ngIf="transactionForm.get('transactionDate')?.hasError('required') && transactionForm.get('transactionDate')?.touched">
+              תאריך הכנסה חובה
+            </div>
+            <div class="form-error" *ngIf="transactionForm.get('transactionDate')?.hasError('invalidDate') && transactionForm.get('transactionDate')?.touched">
+              תאריך לא תקין. השתמש בפורמט dd/MM/yyyy
+            </div>
+          </div>
+          
+          <div class="form-field">
+            <label class="form-label">קטגוריה *</label>
+            <select formControlName="categoryId" required class="custom-select">
+              <option value="">בחר קטגוריה</option>
+              <option *ngFor="let category of getCategories()" [value]="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+            <div class="form-error" *ngIf="transactionForm.get('categoryId')?.hasError('required') && transactionForm.get('categoryId')?.touched">
+              קטגוריה חובה
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Source -->
+        <div class="form-row">
+          <div class="form-field full-width">
+            <label class="form-label">מקור הכנסה *</label>
+            <input 
+              type="text"
+              formControlName="source" 
+              required
+              maxlength="100"
+              class="custom-input"
+              placeholder="לדוגמה: משכורת, פרויקט, השקעה">
+            <div class="form-error" *ngIf="transactionForm.get('source')?.hasError('required') && transactionForm.get('source')?.touched">
+              מקור הכנסה חובה
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Amount and Currency -->
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">סכום *</label>
+            <input 
+              type="number"
+              formControlName="amount" 
+              required
+              step="0.01"
+              min="0.01"
+              class="custom-input">
+            <div class="form-error" *ngIf="transactionForm.get('amount')?.hasError('required') && transactionForm.get('amount')?.touched">
+              סכום חובה
+            </div>
+            <div class="form-error" *ngIf="transactionForm.get('amount')?.hasError('min') && transactionForm.get('amount')?.touched">
+              סכום חייב להיות גדול מ-0
+            </div>
+          </div>
+          
+          <div class="form-field">
+            <label class="form-label">מטבע</label>
+            <select formControlName="currency" class="custom-select">
+              <option value="ILS">₪ ILS</option>
+              <option value="USD">$ USD</option>
+              <option value="EUR">€ EUR</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 4: Notes -->
+        <div class="form-row">
+          <div class="form-field full-width">
+            <label class="form-label">הערות</label>
+            <textarea 
+              formControlName="notes" 
+              rows="3"
+              class="custom-input"
+              placeholder="הערות נוספות (אופציונלי)"></textarea>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Expense Form -->
+      <ng-container *ngIf="!isIncome">
+        <!-- שורה ראשונה: תאריך עסקה, תאריך חיוב, שם בית עסק, סכום -->
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">תאריך עסקה *</label>
+            <input 
+              [type]="getDateInputType('transactionDate')"
+              [readOnly]="getDateReadOnly('transactionDate')"
+              formControlName="transactionDate" 
+              required
+              (change)="onDatePickerChange($event, 'transactionDate')"
+              (click)="onDateInputClick($event)"
+              class="custom-input">
+            <div class="form-error" *ngIf="transactionForm.get('transactionDate')?.hasError('required') && transactionForm.get('transactionDate')?.touched">
+              תאריך עסקה חובה
+            </div>
+            <div class="form-error" *ngIf="transactionForm.get('transactionDate')?.hasError('invalidDate') && transactionForm.get('transactionDate')?.touched">
+              תאריך לא תקין. השתמש בפורמט dd/MM/yyyy
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">תאריך חיוב *</label>
+            <input 
+              [type]="getDateInputType('billingDate')"
+              [readOnly]="getDateReadOnly('billingDate')"
+              formControlName="billingDate" 
+              required
+              (change)="onDatePickerChange($event, 'billingDate')"
+              (click)="onDateInputClick($event)"
+              class="custom-input">
+            <div class="form-error" *ngIf="transactionForm.get('billingDate')?.hasError('required') && transactionForm.get('billingDate')?.touched">
+              תאריך חיוב חובה
+            </div>
+            <div class="form-error" *ngIf="transactionForm.get('billingDate')?.hasError('invalidDate') && transactionForm.get('billingDate')?.touched">
+              תאריך לא תקין. השתמש בפורמט dd/MM/yyyy
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">שם בית עסק *</label>
+            <input 
+              type="text"
+              formControlName="merchantName" 
+              required
+              maxlength="100"
+              class="custom-input">
+            <div class="form-error" *ngIf="transactionForm.get('merchantName')?.hasError('required') && transactionForm.get('merchantName')?.touched">
+              שם בית עסק חובה
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">סכום *</label>
+            <input 
+              type="number"
+              formControlName="amount" 
+              required
+              step="0.01"
+              min="0.01"
+              class="custom-input">
+            <div class="form-error" *ngIf="transactionForm.get('amount')?.hasError('required') && transactionForm.get('amount')?.touched">
+              סכום חובה
+            </div>
+            <div class="form-error" *ngIf="transactionForm.get('amount')?.hasError('min') && transactionForm.get('amount')?.touched">
+              סכום חייב להיות גדול מ-0
+            </div>
+          </div>
+        </div>
+
+        <!-- שורה שניה: מטבע, קטגוריה, תשלומים, מקור -->
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">מטבע</label>
+            <select formControlName="currency" class="custom-select">
+              <option value="ILS">₪ ILS</option>
+              <option value="USD">$ USD</option>
+              <option value="EUR">€ EUR</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">קטגוריה *</label>
+            <select formControlName="categoryId" required class="custom-select">
+              <option value="">בחר קטגוריה</option>
+              <option *ngFor="let category of getCategories()" [value]="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+            <div class="form-error" *ngIf="transactionForm.get('categoryId')?.hasError('required') && transactionForm.get('categoryId')?.touched">
+              קטגוריה חובה
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">מספר תשלומים</label>
+            <input 
+              type="number"
+              formControlName="installments" 
+              min="1"
+              class="custom-input"
+              placeholder="רק ל-CAL">
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">מקור *</label>
+            <input 
+              type="text"
+              formControlName="source" 
+              required
+              maxlength="100"
+              class="custom-input">
+            <div class="form-error" *ngIf="transactionForm.get('source')?.hasError('required') && transactionForm.get('source')?.touched">
+              מקור חובה
+            </div>
+          </div>
+        </div>
+
+        <!-- שורה שלישית: מספר כרטיס, אסמכתא, ענף -->
+        <div class="form-row">
+          <div class="form-field form-field-half">
+            <label class="form-label">מספר כרטיס</label>
+            <input 
+              type="text"
+              formControlName="cardNumber" 
+              maxlength="4"
+              pattern="[0-9]{4}"
+              class="custom-input"
+              placeholder="4 ספרות אחרונות">
+          </div>
+
+          <div class="form-field form-field-half">
+            <label class="form-label">אסמכתא / מספר שובר</label>
+            <input 
+              type="text"
+              formControlName="referenceNumber" 
+              maxlength="50"
+              class="custom-input">
+          </div>
+
+          <div class="form-field form-field-half">
+            <label class="form-label">ענף / קטגוריה עסקית</label>
+            <input 
+              type="text"
+              formControlName="branch" 
+              maxlength="100"
+              class="custom-input">
+          </div>
+        </div>
+
+        <!-- הערות -->
+        <div class="form-field full-width">
+          <label class="form-label">הערות</label>
+          <textarea 
+            formControlName="notes" 
+            rows="3"
+            class="custom-input"
+            placeholder="הערות נוספות (אופציונלי)"></textarea>
+        </div>
+
+        <!-- מחציות -->
+        <div class="form-field">
+          <mat-checkbox formControlName="IsHalves">
+            מחציות
+          </mat-checkbox>
+        </div>
+      </ng-container>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="onCancel()">ביטול</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSubmit()" [disabled]="transactionForm.invalid || isSubmitting">
+      {{ isSubmitting ? 'שומר...' : 'עדכן' }}
+    </button>
+  </mat-dialog-actions>
+</div>
+

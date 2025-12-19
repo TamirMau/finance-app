@@ -1,0 +1,161 @@
+<div class="bank-statements-container">
+  <div class="page-header">
+    <div class="header-top">
+      <h1>תנועות בחשבון</h1>
+      <div class="upload-section">
+        <input
+          type="file"
+          #fileInput
+          accept=".xlsx,.xls"
+          (change)="onFileSelected($event)"
+          style="display: none"
+          id="file-upload-input" />
+        
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="fileInput.click()"
+          [disabled]="loading"
+          class="upload-button">
+          <mat-icon>upload_file</mat-icon>
+          <span>טען קובץ אקסל</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section" *ngIf="statement">
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">מספר חשבון:</span>
+            <span class="info-value">{{ statement.accountNumber }}</span>
+            <span class="info-label balance-label" *ngIf="statement.balance != null">יתרה:</span>
+            <span class="info-value balance-value" *ngIf="statement.balance != null">{{ formatCurrency(statement.balance) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">נכון לתאריך:</span>
+            <span class="info-value">{{ formatDate(statement.statementDate) }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>טוען קובץ...</p>
+  </div>
+
+  <div class="error-message" *ngIf="error && !loading">
+    <mat-icon>error</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <div class="table-wrapper" *ngIf="!loading">
+    <mat-card class="table-card" *ngIf="statement && getRows().length > 0">
+      <div class="table-container">
+        <table mat-table [dataSource]="getRows()" matSort class="bank-statement-table">
+          <!-- Date Column -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="date">תאריך</th>
+            <td mat-cell *matCellDef="let row">
+              {{ formatDate(row.date) }}
+            </td>
+          </ng-container>
+
+          <!-- Action Type Column -->
+          <ng-container matColumnDef="actionType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="actionType">סוג פעולה</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.actionType || '' }}
+            </td>
+          </ng-container>
+
+          <!-- Description Column -->
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="description">תיאור</th>
+            <td mat-cell *matCellDef="let row" class="description-cell">
+              {{ row.description || '' }}
+            </td>
+          </ng-container>
+
+          <!-- Reference Column -->
+          <ng-container matColumnDef="reference">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="reference">אסמכתא</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.reference || '' }}
+            </td>
+          </ng-container>
+
+          <!-- Credit Column -->
+          <ng-container matColumnDef="credit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="credit">זכות</th>
+            <td mat-cell *matCellDef="let row">
+              <span *ngIf="row.credit != null" class="credit-amount">
+                {{ formatCurrency(row.credit) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Debit Column -->
+          <ng-container matColumnDef="debit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="debit">חובה</th>
+            <td mat-cell *matCellDef="let row">
+              <span *ngIf="row.debit != null" class="debit-amount">
+                {{ formatCurrency(row.debit) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Value Date Column -->
+          <ng-container matColumnDef="valueDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="valueDate">תאריך ערך</th>
+            <td mat-cell *matCellDef="let row">
+              {{ formatDate(row.valueDate) }}
+            </td>
+          </ng-container>
+
+          <!-- Balance Column -->
+          <ng-container matColumnDef="balance">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="balance">יתרה</th>
+            <td mat-cell *matCellDef="let row">
+              <span *ngIf="row.balance != null">{{ formatCurrency(row.balance) }}</span>
+            </td>
+          </ng-container>
+
+          <!-- For Benefit Of Column -->
+          <ng-container matColumnDef="forBenefitOf">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="forBenefitOf">לטובת</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.forBenefitOf || '' }}
+            </td>
+          </ng-container>
+
+          <!-- For Column -->
+          <ng-container matColumnDef="for">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="for">עבור</th>
+            <td mat-cell *matCellDef="let row">
+              {{ row.for || '' }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+    </mat-card>
+    
+    <!-- Empty State -->
+    <mat-card *ngIf="!statement || (statement && getRows().length === 0)">
+      <mat-card-content>
+        <div class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <h3>אין תנועות להצגה</h3>
+          <p>אין נתונים</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

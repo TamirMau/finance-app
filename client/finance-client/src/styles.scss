@@ -1,0 +1,982 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+// Color Palette Variables - Soft and subtle
+:root {
+  // Background Colors
+  --color-bg: #FFFFFF;
+  --color-surface: #F9FAFB;
+  --color-background-light: #F3F4F6;
+  --color-background-lighter: #F9FAFB;
+  
+  // Border Colors
+  --color-border: #D1D5DB;
+  --color-border-focus: #3B82F6;
+  --color-border-dark: #9CA3AF;
+  
+  // Text Colors
+  --color-text: #111827;
+  --color-text-muted: #6B7280;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-placeholder: #9CA3AF;
+  
+  // Primary Colors
+  --color-primary-dark: #1E3A8A;
+  --color-primary: #3B82F6;
+  --color-primary-light: #60A5FA;
+  
+  // Secondary Colors
+  --color-secondary: #14B8A6;
+  --color-secondary-dark: #0D9488;
+  --color-secondary-light: #5EEAD4;
+  
+  // Success/Income Colors
+  --color-success: #10B981;
+  --color-success-dark: #047857;
+  --color-success-light: #D1FAE5;
+  
+  // Error/Expense Colors
+  --color-error: #EF4444;
+  --color-error-dark: #B91C1C;
+  --color-error-light: #FEE2E2;
+  
+  // Neutral/Disabled
+  --color-neutral: #9CA3AF;
+  --color-disabled: #9CA3AF;
+  
+  // Warning Colors
+  --color-warning: #F59E0B;
+  --color-warning-dark: #D97706;
+  
+  // White
+  --color-white: #FFFFFF;
+  
+  // Category Colors (for charts) - softer
+  --color-category-food: #F59E0B;
+  --color-category-housing: #3B82F6;
+  --color-category-transport: #10B981;
+  
+  // Spacing System (8px base)
+  --spacing-xs: 0.5rem;   // 8px
+  --spacing-sm: 0.75rem;  // 12px
+  --spacing-md: 1rem;      // 16px
+  --spacing-lg: 1.5rem;    // 24px
+  --spacing-xl: 2rem;      // 32px
+  
+  // Typography - Modern unified font (Poppins - מודרני ונעים)
+  --font-family: 'Poppins', 'Inter', 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-monospace: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace;
+  --font-size-h1: 1.5rem;    // 24px
+  --font-size-h2: 1.25rem;    // 20px
+  --font-size-body: 1rem;     // 16px
+  --font-size-small: 0.875rem; // 14px
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-regular: 400;
+  --font-weight-light: 300;
+  
+  // Component Sizes
+  --field-height: 2.75rem;    // 44px
+  --input-height: 2.75rem;    // 44px (alias)
+  --button-height: 2.75rem;   // 44px
+  --icon-size: 1.25rem;       // 20px
+  --table-row-height: 3rem;   // 48px
+  --padding-h: 0.75rem;        // 12px
+  
+  // Input/Button Widths
+  --input-width: 17.5rem;     // 280px
+  --dropdown-width: 15rem;    // 240px (minimum)
+  --search-width: 18.75rem;   // 300px
+  --excel-button-width: 11.25rem; // 180px
+  --new-button-width: 12.5rem; // 200px
+  --sidebar-width: 13.75rem;   // 220px
+  --color-input-width: 10rem;  // 160px
+  
+  // Border Radius
+  --radius: 0.5rem;           // 8px
+  --radius-small: 0.375rem;   // 6px
+  --radius-sm: 0.375rem;      // 6px (alias)
+  --radius-md: 0.5rem;        // 8px (alias)
+  --radius-lg: 0.75rem;
+  
+  // Transitions
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  
+  // Shadows (softer)
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  // Grid System
+  --grid-columns: 12;
+  --grid-gap: var(--spacing-md);
+}
+
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Poppins,
+    density: 0,
+  ));
+  
+  // Base font size for rem calculations
+  font-size: 16px;
+  
+  // Smooth scrolling with reduced motion support
+  scroll-behavior: smooth;
+  
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  
+  // Typography
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  
+  // Prevent horizontal scroll on mobile
+  overflow-x: hidden;
+  
+  // Better text rendering
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  // Safe area insets for devices with notch
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { 
+  height: 100%; 
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body { 
+  margin: 0; 
+  font-family: var(--font-family);
+  direction: rtl;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+// Global responsive utilities
+* {
+  box-sizing: border-box;
+}
+
+// Ensure Material cards take full width
+mat-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  padding: var(--spacing-lg);
+  
+  @media (max-width: 600px) {
+    padding: var(--spacing-md);
+  }
+}
+
+mat-card-content {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  
+  // Ensure all direct children are aligned properly
+  > * {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  // If content should be in a row, use flex-row
+  &.row-layout {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-md);
+    
+    > * {
+      width: auto;
+      flex: 0 0 auto;
+    }
+  }
+}
+
+// Touch-friendly minimum sizes
+button, a, input, select, textarea {
+  min-height: 2.75rem; // ~44px for touch targets
+  min-width: 2.75rem;
+}
+
+// Better focus styles for accessibility
+*:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+// Typography System
+h1 {
+  font-size: var(--font-size-h1); // 24px
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+  font-family: var(--font-family);
+}
+
+h2 {
+  font-size: var(--font-size-h2); // 20px
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+  font-family: var(--font-family);
+}
+
+h3, h4, h5, h6 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+p {
+  font-size: var(--font-size-body); // 16px
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+}
+
+.small-text {
+  font-size: var(--font-size-small); // 14px
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+}
+
+// Grid System (12-column)
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 calc(var(--spacing-md) * -0.5);
+  gap: var(--spacing-md);
+}
+
+.col {
+  flex: 1;
+  padding: 0 calc(var(--spacing-md) * 0.5);
+  min-width: 0;
+}
+
+// Grid columns (1-12)
+.col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+.col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+.col-3 { flex: 0 0 25%; max-width: 25%; }
+.col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+.col-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+.col-6 { flex: 0 0 50%; max-width: 50%; }
+.col-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+.col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+.col-9 { flex: 0 0 75%; max-width: 75%; }
+.col-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+.col-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+.col-12 { flex: 0 0 100%; max-width: 100%; }
+
+@media (max-width: 768px) {
+  .col-md-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+  .col-md-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+  .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+  .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+  .col-md-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+  .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+  .col-md-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+  .col-md-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+  .col-md-9 { flex: 0 0 75%; max-width: 75%; }
+  .col-md-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+  .col-md-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+  .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .col-sm-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+  .col-sm-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+  .col-sm-3 { flex: 0 0 25%; max-width: 25%; }
+  .col-sm-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+  .col-sm-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+  .col-sm-6 { flex: 0 0 50%; max-width: 50%; }
+  .col-sm-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+  .col-sm-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+  .col-sm-9 { flex: 0 0 75%; max-width: 75%; }
+  .col-sm-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+  .col-sm-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+  .col-sm-12 { flex: 0 0 100%; max-width: 100%; }
+}
+
+// Form Grid System
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--spacing-md);
+}
+
+.form-col-6 { 
+  grid-column: span 6; 
+}
+
+.form-col-12 { 
+  grid-column: span 12; 
+}
+
+@media (max-width: 768px) {
+  .form-col-6 { 
+    grid-column: span 12; 
+  }
+}
+
+// Form Field Container
+.form-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem; // 6px
+  margin-bottom: var(--spacing-md);
+  width: 100%;
+}
+
+.form-label {
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+}
+
+.form-error {
+  color: var(--color-error);
+  font-size: var(--font-size-small);
+  margin-top: 0.25rem;
+  display: block;
+}
+
+// Custom Input Styling - Beautiful and clean
+.custom-input {
+  width: 100%;
+  height: var(--field-height);
+  min-height: var(--field-height);
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text);
+  padding: 0 var(--padding-h);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background-color: var(--color-surface);
+  box-sizing: border-box;
+  direction: rtl;
+  line-height: 1.5;
+  transition: all 120ms ease;
+  
+  &::placeholder {
+    color: var(--color-text-placeholder);
+    opacity: 1;
+  }
+  
+  &:hover {
+    border-color: var(--color-border-focus);
+    background-color: var(--color-bg);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    background-color: var(--color-bg);
+  }
+  
+  &:disabled {
+    color: var(--color-text-placeholder);
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: var(--color-background-light);
+    border-color: var(--color-border-dark);
+  }
+  
+  // Color input styling
+  &[type="color"] {
+    height: var(--field-height);
+    min-height: var(--field-height);
+    width: var(--color-input-width) !important;
+    max-width: var(--color-input-width) !important;
+    min-width: var(--color-input-width) !important;
+    padding: 0.25rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    
+    &::-webkit-color-swatch {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-small);
+    }
+  }
+  
+  // Date input styling
+  &[type="date"] {
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.6;
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  
+  // Number input styling
+  &[type="number"] {
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      opacity: 0.6;
+      cursor: pointer;
+    }
+  }
+}
+
+// Textarea styling (separate rule for textarea elements)
+textarea.custom-input {
+  min-height: calc(var(--field-height) * 2);
+  padding-top: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  resize: vertical;
+}
+
+// Custom Select Styling - Beautiful and clean
+.custom-select {
+  width: 100%;
+  min-width: var(--dropdown-width);
+  height: var(--field-height);
+  min-height: var(--field-height);
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text);
+  padding: 0 var(--padding-h);
+  padding-left: calc(var(--padding-h) + 1.75rem); // Space for arrow
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background-color: var(--color-surface);
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath fill='%236B7280' d='M7 10L2 5h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left var(--padding-h) center;
+  background-size: 1rem 1rem;
+  cursor: pointer;
+  direction: rtl;
+  line-height: 1.5;
+  transition: all 120ms ease;
+  
+  &:hover {
+    border-color: var(--color-border-focus);
+    background-color: var(--color-bg);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    background-color: var(--color-bg);
+  }
+  
+  &:disabled {
+    color: var(--color-text-placeholder);
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: var(--color-background-light);
+    border-color: var(--color-border-dark);
+  }
+  
+  option {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    padding: 0.625rem var(--padding-h);
+    direction: rtl;
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-regular);
+  }
+  
+  option:checked {
+    background-color: #E0F2FE;
+    color: var(--color-primary-dark);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  option:hover {
+    background-color: var(--color-background-light);
+  }
+}
+
+
+// Responsive images
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+// Mobile-specific adjustments
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  body {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+// Print styles
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+// Loading Skeleton Animation
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-background-light) 0px,
+    var(--color-border) 40px,
+    var(--color-background-light) 80px
+  );
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: var(--color-background-light);
+  }
+}
+
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  
+  &.skeleton-title {
+    height: 1.5rem;
+    width: 60%;
+  }
+  
+  &.skeleton-subtitle {
+    height: 1rem;
+    width: 40%;
+  }
+}
+
+.skeleton-card {
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+// Global Button Styles
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-button {
+  border-radius: var(--radius-md) !important;
+  font-weight: 500 !important;
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-body) !important;
+  transition: all var(--transition-fast) !important;
+  min-height: 2.75rem !important;
+  
+  // Ensure button text uses the font
+  .mdc-button__label {
+    font-family: var(--font-family) !important;
+    font-size: var(--font-size-body) !important;
+    font-weight: var(--font-weight-semibold) !important;
+  }
+  
+  // Ensure all text spans use the font (except ripple elements)
+  span:not(.mat-mdc-button-persistent-ripple):not(.mdc-button__ripple):not(.mat-icon) {
+    font-family: var(--font-family) !important;
+    font-size: var(--font-size-body) !important;
+    font-weight: var(--font-weight-semibold) !important;
+  }
+  
+  // Primary Button
+  &.mat-primary {
+    background-color: var(--color-primary) !important;
+    color: var(--color-white) !important;
+    
+    &:hover {
+      background-color: var(--color-primary-dark) !important;
+      box-shadow: var(--shadow-md);
+    }
+  }
+  
+  // Secondary Button
+  &.mat-secondary {
+    background-color: var(--color-background-light) !important;
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border) !important;
+    
+    &:hover {
+      background-color: #E5E7EB !important;
+      box-shadow: var(--shadow-md);
+    }
+  }
+  
+  // Warn/Danger Button
+  &.mat-warn {
+    background-color: var(--color-error) !important;
+    color: var(--color-white) !important;
+    
+    &:hover {
+      background-color: #B91C1C !important;
+      box-shadow: var(--shadow-md);
+    }
+  }
+  
+  // Success Button
+  &.mat-success {
+    background-color: var(--color-success) !important;
+    color: var(--color-white) !important;
+    
+    &:hover {
+      background-color: var(--color-success-dark) !important;
+      box-shadow: var(--shadow-md);
+    }
+  }
+}
+
+// Alert/Toast Styles
+::ng-deep {
+  // Success Snackbar
+  .mat-mdc-snack-bar-container {
+    &.success-snackbar {
+      --mdc-snackbar-container-color: var(--color-success);
+      --mdc-snackbar-supporting-text-color: var(--color-white);
+      
+      .mat-mdc-snack-bar-label {
+        color: var(--color-white) !important;
+        font-weight: 500;
+      }
+    }
+    
+    // Warning Snackbar
+    &.warning-snackbar {
+      --mdc-snackbar-container-color: var(--color-warning);
+      --mdc-snackbar-supporting-text-color: var(--color-white);
+      
+      .mat-mdc-snack-bar-label {
+        color: var(--color-white) !important;
+        font-weight: 500;
+      }
+    }
+    
+    // Error Snackbar
+    &.error-snackbar {
+      --mdc-snackbar-container-color: var(--color-error);
+      --mdc-snackbar-supporting-text-color: var(--color-white);
+      
+      .mat-mdc-snack-bar-label {
+        color: var(--color-white) !important;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Alert Messages (for inline alerts)
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  
+  &.alert-success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--color-success-dark);
+    border: 1px solid var(--color-success);
+    
+    &::before {
+      content: '✓';
+      color: var(--color-success);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+  }
+  
+  &.alert-warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--color-warning-dark);
+    border: 1px solid var(--color-warning);
+    
+    &::before {
+      content: '⚠';
+      color: var(--color-warning);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+  }
+  
+  &.alert-error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-error-dark);
+    border: 1px solid var(--color-error);
+    
+    &::before {
+      content: '✕';
+      color: var(--color-error);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// Tooltip Styles
+::ng-deep {
+  // Material Design Buttons - Ensure font is applied globally
+  .mat-mdc-raised-button,
+  .mat-mdc-outlined-button,
+  .mat-mdc-button {
+    font-family: var(--font-family) !important;
+    font-size: var(--font-size-body) !important;
+    
+    .mdc-button__label {
+      font-family: var(--font-family) !important;
+      font-size: var(--font-size-body) !important;
+      font-weight: var(--font-weight-semibold) !important;
+    }
+    
+    span:not(.mat-mdc-button-persistent-ripple):not(.mdc-button__ripple):not(.mat-icon) {
+      font-family: var(--font-family) !important;
+      font-size: var(--font-size-body) !important;
+      font-weight: var(--font-weight-semibold) !important;
+    }
+  }
+  
+  .mat-mdc-tooltip {
+    background-color: var(--color-text-primary) !important;
+    color: var(--color-white) !important;
+    font-size: 0.75rem !important;
+    font-family: var(--font-family) !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: var(--radius-sm) !important;
+    box-shadow: var(--shadow-md) !important;
+  }
+  
+  // Material List Item - מרווח בין אייקון לטקסט
+  .mat-mdc-list-item-unscoped-content,
+  .mdc-list-item__primary-text {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem !important; // 16px מרווח בין אייקון לטקסט
+    
+    mat-icon {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      flex-shrink: 0 !important;
+    }
+    
+    span {
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+    }
+  }
+  
+  // Material Table Fonts - Unified
+  .mat-mdc-table,
+  .mdc-data-table {
+    font-family: var(--font-family) !important;
+    
+    .mat-mdc-header-cell,
+    .mdc-data-table__header-cell {
+      font-family: var(--font-family) !important;
+      font-weight: var(--font-weight-semibold) !important;
+    }
+    
+    .mat-mdc-cell,
+    .mdc-data-table__cell {
+      font-family: var(--font-family) !important;
+    }
+    
+    .mat-sort-header-content {
+      font-family: var(--font-family) !important;
+      font-weight: var(--font-weight-semibold) !important;
+    }
+  }
+  
+  // Remove border from category chips - comprehensive approach
+  .category-chip {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    
+    &.mat-mdc-chip,
+    &.mdc-evolution-chip {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      
+      &::before,
+      &::after {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        display: none !important;
+        content: none !important;
+      }
+    }
+    
+    // Remove border from all inner elements
+    .mdc-evolution-chip__cell,
+    .mat-mdc-chip-action,
+    .mdc-evolution-chip__action,
+    .mat-mdc-chip-focus-overlay {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      
+      &::before,
+      &::after {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        display: none !important;
+        content: none !important;
+      }
+    }
+    
+    // Specifically target the surface element that creates the border
+    .mdc-evolution-chip__surface {
+      border: none !important;
+      border-width: 0 !important;
+      border-style: none !important;
+      border-color: transparent !important;
+      outline: none !important;
+      box-shadow: none !important;
+      
+      &::before {
+        content: none !important;
+        border: none !important;
+        border-width: 0 !important;
+        border-style: none !important;
+        border-color: transparent !important;
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
+      
+      &::after {
+        content: none !important;
+        border: none !important;
+        border-width: 0 !important;
+        border-style: none !important;
+        border-color: transparent !important;
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
+    }
+  }
+  
+  // Also target the chip directly without class selector
+  mat-chip.category-chip {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    
+    * {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      
+      &::before,
+      &::after {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        display: none !important;
+        content: none !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
+    }
+  }
+}

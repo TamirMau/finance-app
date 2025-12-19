@@ -1,0 +1,212 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>דשבורד</h1>
+    <div class="month-selector-wrapper">
+      <app-month-selector></app-month-selector>
+    </div>
+  </div>
+  
+  <!-- KPI Cards -->
+  <div class="kpi-cards-grid">    
+    <mat-card class="kpi-card income" (click)="navigateToIncomes()">
+      <mat-card-content>
+        <div class="kpi-icon">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <h3>הכנסות</h3>
+          <p class="amount">{{ totalIncome() | number:'1.2-2' }} ₪</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="kpi-card expense" (click)="navigateToTransactions()">
+      <mat-card-content>
+        <div class="kpi-icon">
+          <mat-icon>trending_down</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <h3>הוצאות אשראי</h3>
+          <p class="amount">{{ totalExpenses() | number:'1.2-2' }} ₪</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="kpi-card credit" *ngIf="!bankTransactionsLoading() && bankBalance() !== null" (click)="navigateToBankStatements()">
+      <mat-card-content>
+        <div class="kpi-icon">
+          <mat-icon>account_balance_wallet</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <h3>יתרה מהבנק</h3>
+          <p class="amount balance-value" [class.negative]="bankBalance() !== null && bankBalance()! < 0">
+            {{ bankBalance() | number:'1.2-2' }} ₪
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="kpi-card status" [class.negative]="currentStatus() < 0" [class.positive]="currentStatus() > 0">
+      <mat-card-content>
+        <div class="kpi-icon">
+          <mat-icon>{{ currentStatus() >= 0 ? 'check_circle' : 'error' }}</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <h3>סטטוס עדכני</h3>
+          <p class="amount" [class.negative]="currentStatus() < 0" [class.positive]="currentStatus() > 0">{{ currentStatus() | number:'1.2-2' }} ₪</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section" *ngIf="!loading() && transactions().length > 0">
+    <!-- Expenses by Category (Pie Chart) - Full Width -->
+    <mat-card class="chart-card chart-card-full-width">
+      <mat-card-header>
+        <mat-card-title>חלוקת הוצאות לפי קטגוריות</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="pie-chart-container" *ngIf="pieChartData().length > 0; else noCategories">
+          <!-- SVG Pie Chart -->
+          <div class="pie-chart-wrapper">
+            <svg class="pie-chart" viewBox="0 0 250 250" (click)="onPieChartClick($event)">
+              <g transform="translate(125, 125)">
+                <ng-container *ngFor="let item of pieChartData(); let i = index">
+                  <!-- Use circle for 100% slice, path for others -->
+                  <circle
+                    *ngIf="pieChartData().length === 1 && totalExpensesForPieChart() > 0 && (item.amount / totalExpensesForPieChart()) >= 0.9999"
+                    [attr.cx]="0"
+                    [attr.cy]="0"
+                    [attr.r]="100"
+                    [attr.fill]="item.color"
+                    [attr.stroke]="'#FFFFFF'"
+                    [attr.stroke-width]="2"
+                    class="pie-slice pie-slice-animated"
+                    [attr.data-category]="item.name"
+                    [attr.data-index]="i"
+                    [style.animation-delay]="(i * 0.1) + 's'"
+                    (mouseenter)="onPieSliceHover(item, $event)"
+                    (mouseleave)="onPieSliceLeave()"
+                    style="cursor: pointer;">
+                  </circle>
+                  <path
+                    *ngIf="!(pieChartData().length === 1 && totalExpensesForPieChart() > 0 && (item.amount / totalExpensesForPieChart()) >= 0.9999)"
+                    [attr.d]="getPieSlicePath(item, i)"
+                    [attr.fill]="item.color"
+                    [attr.stroke]="'#FFFFFF'"
+                    [attr.stroke-width]="2"
+                    class="pie-slice pie-slice-animated"
+                    [attr.data-category]="item.name"
+                    [attr.data-index]="i"
+                    [style.animation-delay]="(i * 0.1) + 's'"
+                    (mouseenter)="onPieSliceHover(item, $event)"
+                    (mouseleave)="onPieSliceLeave()"
+                    style="cursor: pointer;">
+                  </path>
+                </ng-container>
+              </g>
+            </svg>
+            <!-- Legend -->
+            <div class="pie-legend">
+              <div 
+                *ngFor="let item of pieChartData(); let i = index" 
+                class="legend-item"
+                [attr.data-category]="item.name"
+                (click)="onCategoryClick(item.name)"
+                (mouseenter)="onLegendItemHover(item.name, i)"
+                (mouseleave)="onLegendItemLeave()"
+                [style.border-color]="item.color">
+                <div class="legend-color" [style.background-color]="item.color"></div>
+                <div class="legend-info">
+                  <span class="legend-name" [style.color]="item.color">{{ item.name }}</span>
+                  <span class="legend-amount">{{ item.amount | number:'1.2-2' }} ₪</span>
+                  <span class="legend-percentage">
+                    {{ totalExpensesForPieChart() > 0 ? ((item.amount / totalExpensesForPieChart()) * 100).toFixed(1) : '0' }}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noCategories>
+          <p class="no-data">אין הוצאות להצגה</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Income/Expenses Trends - Below Pie Chart -->
+    <mat-card class="chart-card chart-card-full-width">
+      <mat-card-header>
+        <mat-card-title>מגמות הכנסות והוצאות חודשיות</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="trends-list" *ngIf="lineChartData().length > 0; else noTrends">
+          <div *ngFor="let month of lineChartData()" class="trend-item">
+            <div class="trend-date">{{ month.date }}</div>
+            <div class="trend-bars">
+              <div 
+                class="trend-bar income-bar" 
+                [style.width.%]="getIncomeBarWidth(month.income)"
+                [attr.data-tooltip]="'הכנסות: ' + (month.income | number:'1.2-2') + ' ₪'">
+                <span class="trend-value">{{ (month.income || 0) | number:'1.2-2' }} ₪</span>
+              </div>
+              <div 
+                class="trend-bar expense-bar" 
+                [style.width.%]="getExpenseBarWidth(month.expense)"
+                [attr.data-tooltip]="'הוצאות: ' + (month.expense | number:'1.2-2') + ' ₪'">
+                <span class="trend-value">{{ (month.expense || 0) | number:'1.2-2' }} ₪</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noTrends>
+          <p class="no-data">אין נתונים להצגה</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Top Categories Comparison -->
+    <div class="charts-grid">
+      <mat-card class="chart-card chart-card-full">
+        <mat-card-header>
+          <mat-card-title>השוואת קטגוריות הוצאות</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="bar-chart-container" *ngIf="pieChartData().length > 0; else noBars">
+            <div *ngFor="let item of pieChartData()" class="bar-item" (click)="onCategoryClick(item.name)">
+              <div class="bar-label">{{ item.name }}</div>
+              <div class="bar-wrapper">
+                <div 
+                  class="bar-fill" 
+                  [style.width.%]="totalExpensesForPieChart() > 0 ? (item.amount / totalExpensesForPieChart()) * 100 : 0"
+                  [style.background-color]="item.color"
+                  data-type="expense"
+                  [attr.data-tooltip]="item.name + ': ' + (item.amount | number:'1.2-2') + ' ₪'">
+                  <span class="bar-value">{{ item.amount | number:'1.2-2' }} ₪</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noBars>
+            <p class="no-data">אין הוצאות להצגה</p>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading()">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>טוען נתונים...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading() && transactions().length === 0">
+    <mat-icon>inbox</mat-icon>
+    <h2>אין עסקאות להצגה</h2>
+    <p>עדיין לא נוספו עסקאות לתקופה זו</p>
+
+  </div>
+</div>
+

@@ -1,0 +1,405 @@
+<div class="transaction-list-container">
+  <div class="page-header">
+    <h1>{{ pageTitle() }}</h1>
+    <div class="month-selector-wrapper">
+      <app-month-selector></app-month-selector>
+    </div>
+  </div>
+  
+  <!-- Incomes Card -->
+  <mat-card class="income-card" *ngIf="transactionType() === 'Income'">
+    <mat-card-header>
+      <mat-card-title>הכנסות</mat-card-title>
+      <div class="spacer"></div>
+      <div class="header-actions">
+        <button mat-raised-button (click)="toggleIncomeForm()" class="action-button income-button">
+          <mat-icon>{{ showIncomeForm() ? 'close' : 'add' }}</mat-icon>
+          <span class="button-text">{{ showIncomeForm() ? 'סגור טופס' : 'הוסף הכנסה' }}</span>
+        </button>
+      </div>
+    </mat-card-header>
+    
+    <!-- Income Form (collapsible) -->
+    <mat-card-content *ngIf="showIncomeForm() && !editingTransactionId()" class="income-form-section">
+      <app-income-form
+        [categories]="categories()"
+        [loading]="incomeFormLoading()"
+        (submit)="onIncomeFormSubmit($event)"
+        (cancel)="toggleIncomeForm()">
+      </app-income-form>
+    </mat-card-content>
+    
+    <!-- Filters Section -->
+    <mat-card-content>
+      <app-transaction-filters
+        [searchTerm]="searchTerm"
+        [selectedCategoryFilter]="selectedCategoryFilter"
+        [categories]="categories"
+        [transactions]="allIncomes"
+        [showIncomeOnly]="true"
+        (searchChange)="onSearchChange($event)"
+        (categoryChange)="onCategoryFilterChange($event)"
+        (clearFilters)="clearFilters()">
+      </app-transaction-filters>
+      
+      <div class="results-count" *ngIf="filteredIncomes().length > 0">
+        מציג {{ filteredIncomes().length }} מתוך {{ allIncomes().length }} הכנסות
+      </div>
+    </mat-card-content>
+    
+    <!-- Incomes Table -->
+    <mat-card-content>
+      <div class="table-wrapper" *ngIf="!loading()">
+        <div class="table-container" *ngIf="filteredIncomes().length > 0">
+          <table mat-table [dataSource]="filteredIncomes()" matSort [matSortActive]="sortColumn()" [matSortDirection]="sortDirection()" (matSortChange)="onSortChange($event)" class="transactions-table income-table">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="date">תאריך עסקה</th>
+            <td mat-cell *matCellDef="let transaction">
+              {{ (transaction.transactionDate || transaction.date) | date:'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="billingDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="billingDate">תאריך חיוב מקורי</th>
+            <td mat-cell *matCellDef="let transaction">
+              {{ (transaction.billingDate || transaction.transactionDate || transaction.date) | date:'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="assignedMonthDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="assignedMonthDate">תאריך שיוך לחודש</th>
+            <td mat-cell *matCellDef="let transaction">
+              {{ (transaction.assignedMonthDate || transaction.transactionDate || transaction.date) | date:'MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="merchantName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="merchantName">שם בית עסק</th>
+            <td mat-cell *matCellDef="let transaction" class="merchant-name-cell">
+              {{ transaction.merchantName || '-' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="amount">סכום</th>
+            <td mat-cell *matCellDef="let transaction">
+              <span class="amount-cell income">
+                +{{ transaction.amount | number:'1.2-2' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="currency">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="currency">מטבע</th>
+            <td mat-cell *matCellDef="let transaction" class="currency-cell">
+              <span class="currency-badge">
+                {{ getCurrencySymbol(transaction.currency) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="category">קטגוריה</th>
+            <td mat-cell *matCellDef="let transaction">
+              <mat-chip class="category-chip" 
+                        [style.background-color]="getCategoryColor(transaction.categoryId)" 
+                        [style.color]="'#1F2937'"
+                        [style.border]="'none'"
+                        [style.outline]="'none'"
+                        [style.box-shadow]="'none'">
+                <mat-icon *ngIf="getCategoryIcon(transaction.categoryId)" class="category-icon">
+                  {{ getCategoryIcon(transaction.categoryId) }}
+                </mat-icon>
+                {{ transaction.categoryName || 'ללא קטגוריה' }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="referenceNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="referenceNumber">אסמכתא</th>
+            <td mat-cell *matCellDef="let transaction" class="reference-number-cell">
+              {{ transaction.referenceNumber || '-' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="source">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="source">מקור</th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.source || '-' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="notes">
+            <th mat-header-cell *matHeaderCellDef>הערות</th>
+            <td mat-cell *matCellDef="let transaction" class="notes-cell">
+              {{ transaction.notes || '-' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>פעולות</th>
+            <td mat-cell *matCellDef="let transaction" class="actions-cell">
+              <button mat-icon-button 
+                      (click)="startEditTransaction(transaction)"
+                      matTooltip="ערוך"
+                      aria-label="ערוך הכנסה">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button 
+                      color="warn" 
+                      (click)="deleteTransaction(transaction.id)"
+                      matTooltip="מחק"
+                      aria-label="מחק הכנסה">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="incomeDisplayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: incomeDisplayedColumns;" class="transaction-row"></tr>
+          </table>
+        </div>
+        
+
+        <div *ngIf="filteredIncomes().length === 0 && !loading()" class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <h3>אין הכנסות להצגה</h3>
+          <p *ngIf="searchTerm() || selectedCategoryFilter() !== null">
+            נסה לשנות את הפילטרים
+          </p>
+          <p *ngIf="!searchTerm() && selectedCategoryFilter() === null">
+            אין נתונים
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <!-- Expenses Card -->
+  <mat-card class="expense-card" *ngIf="transactionType() === 'Expense'">
+    <mat-card-header>
+      <mat-card-title>הוצאות</mat-card-title>
+      <div class="spacer"></div>
+      <div class="header-actions">
+        <button mat-raised-button (click)="uploadCreditCardFile()" class="action-button credit-card-button">
+          <mat-icon>credit_card</mat-icon>
+          <span class="button-text">העלאת קובץ אשראי</span>
+        </button>
+        <button mat-raised-button (click)="toggleExpenseForm()" class="action-button new-transaction-button">
+          <mat-icon>{{ showExpenseForm() ? 'close' : 'add' }}</mat-icon>
+          <span class="button-text">{{ showExpenseForm() ? 'סגור טופס' : 'הוצאה חדשה' }}</span>
+        </button>
+      </div>
+    </mat-card-header>
+    
+    <!-- Expense Form (collapsible) -->
+    <mat-card-content *ngIf="showExpenseForm() && !editingTransactionId()" class="expense-form-section">
+      <app-expense-form
+        [categories]="categories()"
+        [loading]="expenseFormLoading()"
+        (submit)="onExpenseFormSubmit($event)"
+        (cancel)="toggleExpenseForm()">
+      </app-expense-form>
+    </mat-card-content>
+    
+    <!-- Filters Section -->
+    <mat-card-content class="filters-with-summary">
+     
+      
+      <div class="filters-container">
+        <app-transaction-filters
+          [searchTerm]="searchTerm"
+          [selectedCategoryFilter]="selectedCategoryFilter"
+          [categories]="categories"
+          [transactions]="allExpenses"
+          [showIncomeOnly]="false"
+          (searchChange)="onSearchChange($event)"
+          (categoryChange)="onCategoryFilterChange($event)"
+          (clearFilters)="clearFilters()">
+        </app-transaction-filters>
+         <!-- Halves Summary Card -->
+      <div *ngIf="shouldShowHalvesSummary()" class="halves-summary-card">
+        <div class="halves-summary-content">
+          <div class="halves-summary-item">
+            <span class="halves-summary-label">סה"כ מחציות:</span>
+            <span class="halves-summary-amount">{{ halvesExpensesTotal() | number:'1.2-2' }} ₪</span>
+          </div>
+          <div class="halves-summary-divider"></div>
+          <div class="halves-summary-item">
+            <span class="halves-summary-label">חצי סכום:</span>
+            <span class="halves-summary-amount">{{ halvesExpensesHalf() | number:'1.2-2' }} ₪</span>
+          </div>
+        </div>
+      </div>
+        <div class="results-count" *ngIf="transactions().length > 0">
+          מציג {{ transactions().length }} מתוך {{ allExpenses().length }} הוצאות
+        </div>
+      </div>
+    </mat-card-content>
+    
+    <!-- Expenses Table -->
+    <mat-card-content>
+      <div class="table-wrapper" *ngIf="!loading()">
+        <div class="table-container" *ngIf="transactions().length > 0">
+          <table mat-table [dataSource]="transactions()" matSort [matSortActive]="sortColumn()" [matSortDirection]="sortDirection()" (matSortChange)="onSortChange($event)" class="transactions-table expense-table">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="date">תאריך עסקה</th>
+            <td mat-cell *matCellDef="let transaction">
+              {{ (transaction.transactionDate || transaction.date) | date:'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="billingDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="billingDate">תאריך חיוב מקורי</th>
+            <td mat-cell *matCellDef="let transaction">
+              {{ (transaction.billingDate || transaction.transactionDate || transaction.date) | date:'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="assignedMonthDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="assignedMonthDate">תאריך שיוך לחודש</th>
+            <td mat-cell *matCellDef="let transaction">
+              {{ (transaction.assignedMonthDate || transaction.transactionDate || transaction.date) | date:'MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="merchantName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="merchantName">שם בית עסק</th>
+            <td mat-cell *matCellDef="let transaction" class="merchant-name-cell">
+              {{ transaction.merchantName || '-' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="amount">סכום</th>
+            <td mat-cell *matCellDef="let transaction">
+              <span class="amount-cell expense">
+                -{{ transaction.amount | number:'1.2-2' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="currency">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="currency">מטבע</th>
+            <td mat-cell *matCellDef="let transaction" class="currency-cell">
+              <span class="currency-badge">
+                {{ getCurrencySymbol(transaction.currency) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="category">קטגוריה</th>
+            <td mat-cell *matCellDef="let transaction">
+              <mat-chip class="category-chip" 
+                        [style.background-color]="getCategoryColor(transaction.categoryId)" 
+                        [style.color]="'#1F2937'"
+                        [style.border]="'none'"
+                        [style.outline]="'none'"
+                        [style.box-shadow]="'none'">
+                <mat-icon *ngIf="getCategoryIcon(transaction.categoryId)" class="category-icon">
+                  {{ getCategoryIcon(transaction.categoryId) }}
+                </mat-icon>
+                {{ transaction.categoryName || 'ללא קטגוריה' }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="referenceNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="referenceNumber">אסמכתא</th>
+            <td mat-cell *matCellDef="let transaction" class="reference-number-cell">
+              {{ transaction.referenceNumber || '-' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="installments">
+            <th mat-header-cell *matHeaderCellDef>תשלומים</th>
+            <td mat-cell *matCellDef="let transaction">
+              <span *ngIf="transaction.installments" class="installments-badge">
+                {{ transaction.installments }} תשלומים
+              </span>
+              <span *ngIf="!transaction.installments">-</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="branch">
+            <th mat-header-cell *matHeaderCellDef>ענף</th>
+            <td mat-cell *matCellDef="let transaction" class="branch-cell">
+              {{ transaction.branch || '-' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="cardNumber">
+            <th mat-header-cell *matHeaderCellDef>מספר כרטיס</th>
+            <td mat-cell *matCellDef="let transaction" class="card-number-cell">
+              <span *ngIf="transaction.cardNumber" class="card-number-display">
+                ****{{ transaction.cardNumber }}
+              </span>
+              <span *ngIf="!transaction.cardNumber">-</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="source">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="source">מקור</th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.source || '-' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="notes">
+            <th mat-header-cell *matHeaderCellDef>הערות</th>
+            <td mat-cell *matCellDef="let transaction" class="notes-cell">
+              {{ transaction.notes || '-' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="isHalves">
+            <th mat-header-cell *matHeaderCellDef>מחציות</th>
+            <td mat-cell *matCellDef="let transaction">
+              <mat-checkbox
+                [checked]="transaction.IsHalves || false"
+                (change)="onHalvesToggle(transaction, $event.checked)">
+                מחציות
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>פעולות</th>
+            <td mat-cell *matCellDef="let transaction" class="actions-cell">
+              <button mat-icon-button 
+                      (click)="startEditTransaction(transaction)"
+                      matTooltip="ערוך"
+                      aria-label="ערוך הוצאה">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button 
+                      color="warn" 
+                      (click)="deleteTransaction(transaction.id)"
+                      matTooltip="מחק"
+                      aria-label="מחק הוצאה">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns();" class="transaction-row"></tr>
+          </table>
+        </div>
+        
+        <div *ngIf="transactions().length === 0 && !loading()" class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <h3>אין הוצאות להצגה</h3>
+          <p *ngIf="searchTerm() || selectedCategoryFilter() !== null">
+            נסה לשנות את הפילטרים
+          </p>
+          <p *ngIf="!searchTerm() && selectedCategoryFilter() === null">
+            אין נתונים
+          </p>
+        </div>
+      </div>
+      
+      <div class="loading-container" *ngIf="loading()">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>טוען עסקאות...</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

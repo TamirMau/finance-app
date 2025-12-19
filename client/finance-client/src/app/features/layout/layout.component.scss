@@ -1,0 +1,647 @@
+.sidenav-container {
+  height: 100vh;
+  direction: rtl;
+  
+  // Ensure proper layout - Material handles this automatically
+  ::ng-deep {
+    .mat-drawer-container {
+      background-color: var(--color-background-lighter);
+    }
+    
+    .mat-drawer-side {
+      border-right: 1px solid var(--color-border);
+    }
+    
+    // Remove scrollbar from sidenav - no internal scrolling
+    .mat-drawer-inner-container {
+      overflow: hidden !important;
+      overflow-y: hidden !important;
+      overflow-x: hidden !important;
+      height: 100% !important;
+      max-height: 100% !important;
+    }
+    
+    // Remove scrollbar from mat-nav-list
+    .mat-mdc-nav-list {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+    }
+    
+    // Remove cdkscrollable if present - target the attribute directly
+    [cdkscrollable] {
+      overflow: hidden !important;
+      overflow-y: hidden !important;
+      overflow-x: hidden !important;
+    }
+    
+    .cdk-scrollable {
+      overflow: hidden !important;
+      overflow-y: hidden !important;
+      overflow-x: hidden !important;
+    }
+    
+    // Also target the mat-drawer-inner-container with cdkscrollable
+    .mat-drawer-inner-container[cdkscrollable] {
+      overflow: hidden !important;
+      overflow-y: hidden !important;
+      overflow-x: hidden !important;
+    }
+    
+    // Material automatically adds margin when sidebar is in 'side' mode
+    // Ensure content is pushed correctly and doesn't overlap
+    .mat-drawer-content {
+      transition: margin-right var(--transition-normal);
+      margin-right: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    // When sidebar is open in side mode, content gets margin automatically
+    .mat-drawer-opened.mat-drawer-side ~ .mat-drawer-content {
+      margin-right: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width));
+      max-width: calc(100% - var(--sidebar-width));
+    }
+  }
+}
+
+.sidenav {
+  width: var(--sidebar-width); // 220px
+  background-color: var(--color-bg) !important;
+  border-right: 1px solid var(--color-border);
+  box-shadow: var(--shadow-1);
+  transition: transform var(--transition-normal);
+  overflow: hidden !important;
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+  
+  // Ensure inner container doesn't scroll
+  ::ng-deep {
+    .mat-drawer-inner-container {
+      overflow: hidden !important;
+      overflow-y: hidden !important;
+      overflow-x: hidden !important;
+    }
+    
+    [cdkscrollable] {
+      overflow: hidden !important;
+      overflow-y: hidden !important;
+      overflow-x: hidden !important;
+    }
+  }
+}
+
+.sidenav-header {
+  padding: var(--spacing-lg) var(--spacing-md);
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    text-align: center;
+    font-family: var(--font-family);
+  }
+}
+
+mat-nav-list {
+  padding: var(--spacing-sm) 0;
+  overflow: visible !important;
+  height: auto !important;
+  
+  &.sidenav-list {
+    overflow: visible !important;
+    height: auto !important;
+  }
+  
+  // Material Design wrapper - יוצר מרווח בין אייקון לטקסט
+  ::ng-deep {
+    .mat-mdc-list-item-unscoped-content,
+    .mdc-list-item__primary-text {
+      display: flex !important;
+      align-items: center !important;
+      gap: 1rem !important; // 16px מרווח גדול בין אייקון לטקסט
+      width: 100% !important;
+    }
+  }
+  
+  a {
+    display: flex;
+    align-items: center;
+    gap: 1rem; // 16px מרווח גדול יותר בין אייקון למלל
+    padding: var(--spacing-md) var(--spacing-lg);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    position: relative;
+    margin: 0.125rem var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family);
+    
+    mat-icon {
+      font-size: 1.5rem; // אייקונים יפים יותר (Material Symbols)
+      width: 1.5rem;
+      height: 1.5rem;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+      opacity: 0.9;
+      margin-left: 0 !important; // הסרת מרווח אוטומטי של Material
+    }
+    
+    span {
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-regular);
+      font-family: var(--font-family);
+      letter-spacing: 0.01em;
+      margin-right: 0 !important; // הסרת מרווח אוטומטי של Material
+    }
+    
+    // General active state for all menu items (fallback for items without specific styles)
+    &.active {
+      background-color: rgba(37, 99, 235, 0.15);
+      
+      mat-icon {
+        opacity: 1;
+      }
+      
+      span {
+        font-weight: var(--font-weight-semibold);
+      }
+      
+      // Indicator bar on the right side
+      &::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0.3rem;
+        height: 70%;
+        background-color: var(--color-primary);
+        border-radius: var(--radius-small) 0 0 var(--radius-small);
+      }
+    }
+    
+    // Dashboard - Blue (יותר בולט)
+    &.menu-item-dashboard {
+      mat-icon {
+        color: #2563EB; // כחול כהה יותר ובולט
+        opacity: 1;
+      }
+      
+      &:hover {
+        background-color: rgba(37, 99, 235, 0.12);
+        
+        mat-icon {
+          color: #1D4ED8; // כחול עוד יותר כהה
+          transform: scale(1.05);
+        }
+      }
+      
+      &.active {
+        background-color: rgba(37, 99, 235, 0.18);
+        color: #1D4ED8;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0.3rem; // 5px - יותר בולט
+          height: 70%;
+          background-color: #2563EB;
+          border-radius: var(--radius-small) 0 0 var(--radius-small);
+        }
+        
+        mat-icon {
+          color: #2563EB;
+          opacity: 1;
+        }
+        
+        span {
+          font-weight: var(--font-weight-semibold);
+          color: #1D4ED8;
+        }
+      }
+    }
+    
+    // Transactions - Green (יותר בולט)
+    &.menu-item-transactions {
+      mat-icon {
+        color: #059669; // ירוק כהה יותר ובולט
+        opacity: 1;
+      }
+      
+      &:hover {
+        background-color: rgba(5, 150, 105, 0.12);
+        
+        mat-icon {
+          color: #047857; // ירוק עוד יותר כהה
+          transform: scale(1.05);
+        }
+      }
+      
+      &.active {
+        background-color: rgba(5, 150, 105, 0.18);
+        color: #047857;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0.3rem; // 5px - יותר בולט
+          height: 70%;
+          background-color: #059669;
+          border-radius: var(--radius-small) 0 0 var(--radius-small);
+        }
+        
+        mat-icon {
+          color: #059669;
+          opacity: 1;
+        }
+        
+        span {
+          font-weight: var(--font-weight-semibold);
+          color: #047857;
+        }
+      }
+    }
+    
+    // Categories - Purple (יותר בולט)
+    &.menu-item-categories {
+      mat-icon {
+        color: #7C3AED; // סגול כהה יותר ובולט
+        opacity: 1;
+      }
+      
+      &:hover {
+        background-color: rgba(124, 58, 237, 0.12);
+        
+        mat-icon {
+          color: #6D28D9; // סגול עוד יותר כהה
+          transform: scale(1.05);
+        }
+      }
+      
+      &.active {
+        background-color: rgba(124, 58, 237, 0.18);
+        color: #6D28D9;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0.3rem; // 5px - יותר בולט
+          height: 70%;
+          background-color: #7C3AED;
+          border-radius: var(--radius-small) 0 0 var(--radius-small);
+        }
+        
+        mat-icon {
+          color: #7C3AED;
+          opacity: 1;
+        }
+        
+        span {
+          font-weight: var(--font-weight-semibold);
+          color: #6D28D9;
+        }
+      }
+    }
+    
+    // Settings - Teal (יותר בולט)
+    &.menu-item-settings {
+      mat-icon {
+        color: #0D9488; // טורקיז כהה יותר ובולט
+        opacity: 1;
+      }
+      
+      &:hover {
+        background-color: rgba(13, 148, 136, 0.12);
+        
+        mat-icon {
+          color: #0F766E; // טורקיז עוד יותר כהה
+          transform: scale(1.05);
+        }
+      }
+      
+      &.active {
+        background-color: rgba(13, 148, 136, 0.18);
+        color: #0F766E;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0.3rem; // 5px - יותר בולט
+          height: 70%;
+          background-color: #0D9488;
+          border-radius: var(--radius-small) 0 0 var(--radius-small);
+        }
+        
+        mat-icon {
+          color: #0D9488;
+          opacity: 1;
+        }
+        
+        span {
+          font-weight: var(--font-weight-semibold);
+          color: #0F766E;
+        }
+      }
+    }
+    
+    // Bank Statements - Orange
+    &.menu-item-bank-statements {
+      mat-icon {
+        color: #F59E0B;
+        opacity: 1;
+      }
+      
+      &:hover {
+        background-color: rgba(245, 158, 11, 0.12);
+        
+        mat-icon {
+          color: #D97706;
+          transform: scale(1.05);
+        }
+      }
+      
+      &.active {
+        background-color: rgba(245, 158, 11, 0.18);
+        color: #D97706;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0.3rem;
+          height: 70%;
+          background-color: #F59E0B;
+          border-radius: var(--radius-small) 0 0 var(--radius-small);
+        }
+        
+        mat-icon {
+          color: #F59E0B;
+          opacity: 1;
+        }
+        
+        span {
+          font-weight: var(--font-weight-semibold);
+          color: #D97706;
+        }
+      }
+    }
+    
+    // Transactions Incomes - Green
+    &.menu-item-transactions-incomes {
+      mat-icon {
+        color: #10B981;
+        opacity: 1;
+      }
+      
+      &:hover {
+        background-color: rgba(16, 185, 129, 0.12);
+        
+        mat-icon {
+          color: #059669;
+          transform: scale(1.05);
+        }
+      }
+      
+      &.active {
+        background-color: rgba(16, 185, 129, 0.18);
+        color: #059669;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0.3rem;
+          height: 70%;
+          background-color: #10B981;
+          border-radius: var(--radius-small) 0 0 var(--radius-small);
+        }
+        
+        mat-icon {
+          color: #10B981;
+          opacity: 1;
+        }
+        
+        span {
+          font-weight: var(--font-weight-semibold);
+          color: #059669;
+        }
+      }
+    }
+    
+    // Transactions Expenses - Red
+    &.menu-item-transactions-expenses {
+      mat-icon {
+        color: #EF4444;
+        opacity: 1;
+      }
+      
+      &:hover {
+        background-color: rgba(239, 68, 68, 0.12);
+        
+        mat-icon {
+          color: #DC2626;
+          transform: scale(1.05);
+        }
+      }
+      
+      &.active {
+        background-color: rgba(239, 68, 68, 0.18);
+        color: #DC2626;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0.3rem;
+          height: 70%;
+          background-color: #EF4444;
+          border-radius: var(--radius-small) 0 0 var(--radius-small);
+        }
+        
+        mat-icon {
+          color: #EF4444;
+          opacity: 1;
+        }
+        
+        span {
+          font-weight: var(--font-weight-semibold);
+          color: #DC2626;
+        }
+      }
+    }
+  }
+}
+
+// Enhanced active state for large screens when sidebar is open
+@media (min-width: 961px) {
+  .sidenav-container {
+    mat-nav-list {
+      a.active {
+        background-color: rgba(37, 99, 235, 0.2) !important;
+        
+        &::before {
+          width: 0.35rem !important; // Slightly thicker indicator on large screens
+        }
+      }
+    }
+  }
+}
+
+// Toolbar
+.toolbar {
+  background-color: var(--color-background-lighter) !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: var(--shadow-1);
+  padding: 0 var(--spacing-md);
+  min-height: 4rem;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  
+  .menu-button,
+  .logout-button {
+    color: var(--color-text-primary) !important;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    
+    &:hover {
+      background-color: var(--color-surface);
+    }
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    
+    .username {
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary);
+    }
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.content {
+  padding: 0;
+  min-height: calc(100vh - 4rem);
+  background-color: var(--color-background-lighter);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+// Tablet - keep sidebar open but allow toggle
+@media (max-width: 960px) and (min-width: 601px) {
+  .sidenav-container {
+    ::ng-deep {
+      // Sidebar stays in side mode on tablet
+      .mat-drawer-opened.mat-drawer-side ~ .mat-drawer-content {
+        margin-right: var(--sidebar-width);
+        width: calc(100% - var(--sidebar-width));
+        max-width: calc(100% - var(--sidebar-width));
+      }
+    }
+  }
+}
+
+// Mobile only
+@media (max-width: 600px) {
+  .sidenav-container {
+    ::ng-deep {
+      // In overlay mode, no margin needed - sidebar overlays content
+      .mat-drawer-opened.mat-drawer-side ~ .mat-drawer-content {
+        margin-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+  }
+  
+  .sidenav {
+    width: var(--sidebar-width);
+    
+    // Slide-in animation for mobile
+    &[style*="transform: translateX(0%)"] {
+      animation: slideIn var(--transition-normal);
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  .toolbar {
+    min-height: 3.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .toolbar {
+    min-height: 3rem;
+    padding: 0 var(--spacing-sm);
+    
+    .user-info .username {
+      font-size: var(--font-size-small);
+    }
+  }
+  
+  .content {
+    min-height: calc(100vh - 3rem);
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .sidenav,
+  .content,
+  mat-nav-list a {
+    transition: none;
+  }
+  
+  mat-nav-list a:hover {
+    transform: none;
+  }
+  
+  @keyframes slideIn {
+    from, to {
+      transform: translateX(0);
+    }
+  }
+}
+

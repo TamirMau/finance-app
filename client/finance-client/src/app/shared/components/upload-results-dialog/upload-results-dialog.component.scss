@@ -1,0 +1,139 @@
+::ng-deep {
+  .mat-mdc-dialog-container {
+    .mdc-dialog__content {
+      padding: 0 !important;
+      overflow: visible !important;
+    }
+  }
+  
+  .mat-mdc-dialog-surface {
+    direction: rtl !important;
+    min-width: 320px !important;
+    max-width: 420px !important;
+  }
+}
+
+mat-dialog-content.upload-results-dialog {
+  direction: rtl;
+  padding: 0 !important;
+  overflow: visible !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: block !important;
+  font-family: var(--font-family);
+}
+
+.dialog-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.icon-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-lg) auto;
+  flex-shrink: 0;
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--color-white);
+  }
+  
+  &.success {
+    background-color: var(--color-success);
+  }
+  
+  &.error {
+    background-color: var(--color-error);
+  }
+}
+
+.dialog-title {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  margin: 0 auto var(--spacing-md) auto;
+  line-height: 1.4;
+  text-align: center !important;
+  width: 100%;
+  display: block;
+}
+
+.dialog-message {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-family);
+  color: var(--color-text-secondary);
+  margin: 0 auto;
+  line-height: 1.5;
+  text-align: center !important;
+  width: 100%;
+  display: block;
+  
+  &.error-message {
+    color: var(--color-error-dark);
+  }
+}
+
+mat-dialog-actions {
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg) !important;
+  margin: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+  
+  .close-button {
+    min-width: 120px;
+    height: var(--button-height);
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    margin: 0 auto;
+  }
+}
+
+// Responsive design
+@media (max-width: 600px) {
+  .upload-results-dialog {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  
+  .dialog-content {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  
+  .icon-container {
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--spacing-md);
+    
+    mat-icon {
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
+    }
+  }
+  
+  .dialog-title {
+    font-size: 1.125rem;
+  }
+}

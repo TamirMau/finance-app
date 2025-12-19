@@ -1,0 +1,587 @@
+.settings-container {
+  padding: var(--spacing-lg);
+  max-width: 50rem;
+  width: 100%;
+  margin: 0 auto;
+  direction: rtl;
+  box-sizing: border-box;
+
+  h1 {
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    font-family: var(--font-family);
+    
+    @media (max-width: 600px) {
+      font-size: var(--font-size-h2);
+    }
+  }
+  
+  @media (max-width: 600px) {
+    padding: var(--spacing-md);
+  }
+}
+
+.settings-card {
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--radius);
+  overflow: visible;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-1);
+  
+  // Ensure card content doesn't clip
+  mat-card-content {
+    overflow: visible;
+  }
+
+  mat-card-header {
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-sm);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+
+    mat-card-title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: var(--font-size-h2);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary);
+      font-family: var(--font-family);
+      flex-wrap: nowrap;
+
+      mat-icon {
+        color: var(--color-primary);
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: var(--spacing-lg);
+    position: relative;
+    isolation: isolate; // Create new stacking context
+    
+    form {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+// User Info
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: nowrap;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .label {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family);
+    min-width: 8rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .value {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body);
+    font-family: var(--font-family);
+    flex: 1;
+    text-align: right;
+  }
+}
+
+.no-user-message {
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 2rem;
+  font-size: var(--font-size-body);
+  font-family: var(--font-family);
+}
+
+// Radio Group
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+  position: relative;
+  isolation: isolate; // Create new stacking context
+  
+  mat-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    
+    // Ensure each radio button is properly spaced
+    mat-radio-button {
+      display: block;
+      position: relative;
+      
+      &:not(:last-child) {
+        margin-bottom: 0; // gap handles spacing
+      }
+    }
+  }
+}
+
+.radio-option {
+  padding: 1rem;
+  border: 2px solid #E5E7EB;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  min-height: 3.5rem;
+  position: relative;
+  isolation: isolate; // Each radio button gets its own stacking context
+  display: block;
+  width: 100%;
+  margin-bottom: 0; // Remove any default margins
+  
+  // Ensure each radio button is a separate block
+  & + & {
+    margin-top: 0; // Remove margin between radio buttons (gap handles spacing)
+  }
+  
+  // Fix Material Design radio button positioning
+  ::ng-deep {
+    .mdc-form-field {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .mdc-radio {
+      position: relative;
+      flex-shrink: 0;
+      margin-left: 0.5rem;
+    }
+    
+    .mat-ripple {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    // Prevent Material Design from creating overlapping layers
+    .mat-mdc-radio-touch-target {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0;
+      z-index: 1;
+    }
+    
+    .mdc-radio__background {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .mdc-label {
+      flex: 1;
+      margin-right: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    // Ensure the input doesn't cause overlap
+    .mdc-radio__native-control {
+      position: absolute;
+      opacity: 0;
+      z-index: 2;
+    }
+  }
+
+  &:hover {
+    background-color: #F9FAFB;
+    border-color: #3B82F6;
+  }
+
+  &.mat-radio-checked {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+  }
+
+  .option-content {
+    margin-right: 0.5rem;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 0; // Allow text to wrap
+
+    .option-title {
+      font-weight: 600;
+      font-size: 1rem;
+      font-family: var(--font-family);
+      margin-bottom: 0.25rem;
+      color: #111827;
+    }
+
+    .option-description {
+      font-size: 0.875rem;
+      font-family: var(--font-family);
+      color: #6B7280;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Date Range Preview
+.date-range-preview {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: var(--color-background-lighter);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--color-border);
+  flex-wrap: nowrap;
+  position: relative;
+  z-index: 2;
+  clear: both;
+
+  mat-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .preview-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+
+    strong {
+      font-size: var(--font-size-small);
+      color: var(--color-text-primary);
+      font-weight: var(--font-weight-semibold);
+      font-family: var(--font-family);
+      white-space: nowrap;
+    }
+
+    .date-range-value {
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-body);
+      font-family: var(--font-family);
+      white-space: nowrap;
+    }
+  }
+}
+
+// Form Grid
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+
+  .form-field {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
+    
+    @media (min-width: 600px) {
+      grid-column: span 6;
+    }
+    
+    @media (min-width: 960px) {
+      grid-column: span 4;
+    }
+  }
+}
+
+// Checkbox Group
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+  position: relative;
+  isolation: isolate;
+}
+
+.checkbox-option {
+  padding: 1rem;
+  border: 2px solid #E5E7EB;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  min-height: 3.5rem;
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  
+  ::ng-deep {
+    .mdc-form-field {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .mdc-checkbox {
+      position: relative;
+      flex-shrink: 0;
+      margin-left: 0.5rem;
+    }
+    
+    .mat-ripple {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .mdc-checkbox__background {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .mdc-label {
+      flex: 1;
+      margin-right: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  &:hover {
+    background-color: #F9FAFB;
+    border-color: #3B82F6;
+  }
+
+  &.mat-checkbox-checked,
+  &.mat-mdc-checkbox-checked {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+  }
+
+  .option-content {
+    margin-right: 0.5rem;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 0;
+
+    .option-title {
+      font-weight: 600;
+      font-size: 1rem;
+      font-family: var(--font-family);
+      margin-bottom: 0.25rem;
+      color: #111827;
+    }
+
+    .option-description {
+      font-size: 0.875rem;
+      font-family: var(--font-family);
+      color: #6B7280;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Actions Section
+.actions-section {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+
+  button {
+    height: var(--button-height);
+    min-height: var(--button-height);
+    padding: 0 var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--font-size-body);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-semibold);
+    
+    // Ensure Material Design button text uses the font
+    ::ng-deep {
+      .mdc-button__label,
+      span:not(.mat-mdc-button-persistent-ripple):not(.mdc-button__ripple):not(.mat-icon) {
+        font-family: var(--font-family) !important;
+        font-size: var(--font-size-body) !important;
+        font-weight: var(--font-weight-semibold) !important;
+      }
+    }
+  }
+
+  .save-button {
+    min-width: 10rem;
+    background-color: var(--color-primary) !important;
+    color: var(--color-white) !important;
+    
+    &:hover:not(:disabled) {
+      background-color: var(--color-primary-dark) !important;
+    }
+    
+    &:disabled {
+      background-color: var(--color-disabled) !important;
+      opacity: 0.6;
+    }
+  }
+
+  .reset-button {
+    min-width: 12rem;
+    background-color: var(--color-background-light) !important;
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border) !important;
+    
+    &:hover {
+      background-color: #E5E7EB !important;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 960px) {
+  .settings-container {
+    padding: var(--spacing-md);
+  }
+
+  .settings-card {
+    mat-card-header {
+      padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
+
+      mat-card-title {
+        font-size: var(--font-size-h2);
+      }
+    }
+
+    mat-card-content {
+      padding: var(--spacing-md);
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .settings-container {
+    padding: var(--spacing-sm);
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .form-field {
+    .custom-input,
+    .custom-select {
+      font-size: var(--font-size-small);
+    }
+  }
+  
+  button {
+    height: 2.5rem; // 40px on mobile
+    font-size: var(--font-size-small);
+  }
+  
+  .actions-section {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+
+    .label {
+      min-width: auto;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-container {
+    padding: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .radio-option {
+    padding: 0.75rem;
+    min-height: auto;
+  }
+
+  .date-range-preview {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+// Touch-friendly
+@media (hover: none) and (pointer: coarse) {
+  .radio-option {
+    min-height: 3.5rem;
+  }
+
+  button {
+    min-height: 3rem;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .radio-option {
+    transition: none;
+  }
+}
+

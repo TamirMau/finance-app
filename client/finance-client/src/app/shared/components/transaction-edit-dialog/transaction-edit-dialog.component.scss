@@ -1,0 +1,208 @@
+@import '../../../shared/styles/transaction-form.scss';
+
+// Override Material Dialog styles to remove scrollbar (desktop only)
+::ng-deep {
+  .transaction-edit-dialog-panel {
+    .mat-mdc-dialog-container {
+      .mdc-dialog__content {
+        overflow: visible !important;
+        max-height: none !important;
+        padding: 0 !important;
+        
+        @media (max-width: 600px) {
+          overflow-y: auto !important;
+          overflow-x: hidden !important;
+          max-height: 70vh !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+      }
+      
+      .mdc-dialog__surface {
+        overflow: visible !important;
+        max-height: none !important;
+        
+        @media (max-width: 600px) {
+          overflow-y: auto !important;
+          overflow-x: hidden !important;
+          max-height: 70vh !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+      }
+    }
+    
+    .cdk-dialog-scrollable {
+      overflow: visible !important;
+      max-height: none !important;
+      
+      @media (max-width: 600px) {
+        overflow-y: auto !important;
+        max-height: 70vh !important;
+      }
+    }
+  }
+}
+
+.transaction-edit-dialog {
+  min-width: 500px;
+  max-width: 90vw;
+  
+  h2[mat-dialog-title] {
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    font-family: var(--font-family);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  mat-dialog-content {
+    padding: var(--spacing-lg) var(--spacing-lg) !important;
+    overflow: visible !important;
+    max-height: none !important;
+  }
+  
+  mat-dialog-actions {
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg) var(--spacing-lg) !important;
+    margin-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
+    
+    button {
+      height: var(--button-height);
+      min-height: var(--button-height);
+      padding: 0 var(--spacing-lg);
+      font-family: var(--font-family);
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-semibold);
+      
+      &[mat-stroked-button] {
+        background-color: var(--color-background-light) !important;
+        color: var(--color-text-primary) !important;
+        border: 1px solid var(--color-border) !important;
+        
+        &:hover {
+          background-color: #E5E7EB !important;
+        }
+      }
+      
+      &[mat-raised-button] {
+        background-color: var(--color-primary) !important;
+        color: var(--color-white) !important;
+        
+        &:hover:not(:disabled) {
+          background-color: var(--color-primary-dark) !important;
+        }
+        
+        &:disabled {
+          background-color: var(--color-disabled) !important;
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+  
+  .transaction-form {
+    .form-row {
+      margin-bottom: var(--spacing-lg);
+      gap: var(--spacing-md);
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
+    .form-field {
+      margin-bottom: 0;
+      
+      &.full-width {
+        margin-bottom: 0;
+      }
+      
+      .form-label {
+        margin-bottom: var(--spacing-sm);
+      }
+      
+      .form-error {
+        margin-top: var(--spacing-xs);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 95vw;
+    
+    mat-dialog-content {
+      padding: var(--spacing-md) var(--spacing-md) !important;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    min-width: 100%;
+    max-width: 100%;
+    width: 100vw;
+    
+    mat-dialog-content {
+      padding: var(--spacing-md) var(--spacing-sm) !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      max-height: 70vh !important;
+      -webkit-overflow-scrolling: touch !important;
+      scrollbar-width: thin !important;
+      scrollbar-color: rgba(0, 0, 0, 0.3) transparent !important;
+      
+      // Webkit scrollbar styling for better visibility
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+        
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+      }
+    }
+    
+    .transaction-form {
+      .form-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: var(--spacing-md) !important;
+        margin-bottom: var(--spacing-md) !important;
+        
+        .form-field {
+          margin-bottom: 0 !important;
+          width: 100% !important;
+          
+          &.full-width {
+            width: 100% !important;
+          }
+        }
+      }
+      
+      .form-field {
+        &.full-width {
+          width: 100% !important;
+        }
+      }
+    }
+    
+    mat-dialog-actions {
+      flex-direction: column;
+      padding: var(--spacing-md) var(--spacing-md) var(--spacing-lg) var(--spacing-md) !important;
+      
+      button {
+        width: 100%;
+        margin: 0.25rem 0;
+      }
+    }
+  }
+}
+

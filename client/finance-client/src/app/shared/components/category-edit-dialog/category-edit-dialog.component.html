@@ -1,0 +1,51 @@
+<div class="category-edit-dialog">
+  <h2 mat-dialog-title>עריכת קטגוריה</h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" class="category-form">
+      <div class="form-row">
+        <div class="form-field full-width">
+          <label class="form-label">שם *</label>
+          <input 
+            type="text"
+            formControlName="name" 
+            required
+            maxlength="50"
+            class="custom-input">
+          <div class="form-error" *ngIf="categoryForm.get('name')?.hasError('required') && categoryForm.get('name')?.touched">
+            שם חובה
+          </div>
+          <div class="form-error" *ngIf="categoryForm.get('name')?.hasError('maxlength') && categoryForm.get('name')?.touched">
+            שם חייב להיות עד 50 תווים
+          </div>
+        </div>
+
+        <div class="form-field full-width color-input-wrapper">
+          <label class="form-label">צבע (אופציונלי - יוקצה אוטומטית אם לא נבחר)</label>
+          <input 
+            type="color"
+            formControlName="color" 
+            class="custom-input color-input">
+          <p class="form-hint">אם לא תבחר צבע, יוקצה צבע אוטומטית מהפלטה</p>
+        </div>
+      </div>
+
+      <div class="form-field full-width">
+        <label class="form-label">אייקון (Material Icon שם)</label>
+        <input 
+          type="text"
+          formControlName="icon" 
+          placeholder="לדוגמה: home, work, shopping_cart"
+          class="custom-input">
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="onCancel()">ביטול</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSubmit()" [disabled]="categoryForm.invalid || isSubmitting">
+      {{ isSubmitting ? 'שומר...' : 'עדכן' }}
+    </button>
+  </mat-dialog-actions>
+</div>
+

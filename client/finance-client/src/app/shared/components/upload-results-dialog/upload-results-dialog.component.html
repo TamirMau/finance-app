@@ -1,0 +1,29 @@
+<mat-dialog-content class="upload-results-dialog">
+  <div class="dialog-content">
+    <div class="icon-container" [class.success]="data.success" [class.error]="!data.success">
+      <mat-icon>{{ data.success ? 'check_circle' : 'error' }}</mat-icon>
+    </div>
+    
+    <h2 class="dialog-title">{{ data.success ? 'העלאה הושלמה בהצלחה' : 'העלאה נכשלה' }}</h2>
+    
+    <p class="dialog-message" *ngIf="data.success">
+      <span *ngIf="data.totalCreated !== undefined && data.totalParsed !== undefined">
+        {{ data.totalCreated }} עסקאות נוספו
+      </span>
+      <span *ngIf="!data.totalCreated || !data.totalParsed">
+        {{ data.message || 'הקובץ הועלה בהצלחה' }}
+      </span>
+    </p>
+    
+    <p class="dialog-message error-message" *ngIf="!data.success">
+      {{ data.message || 'אירעה שגיאה בעת העלאת הקובץ' }}
+    </p>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onClose()" class="close-button">
+    סגור
+  </button>
+</mat-dialog-actions>
+
