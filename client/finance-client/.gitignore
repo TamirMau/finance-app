@@ -40,10 +40,6 @@ testem.log
 /typings
 __screenshots__/
 
-# Angular environments (examples only)
-/src/environments/*.ts
-!/src/environments/environment.example.ts
-
 # System files
 .DS_Store
 Thumbs.db
