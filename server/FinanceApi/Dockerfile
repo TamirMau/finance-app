@@ -1,10 +1,9 @@
 # שלב build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY FinanceApi/*.csproj ./FinanceApi/
-RUN dotnet restore FinanceApi/FinanceApi.csproj
-COPY FinanceApi/. ./FinanceApi/
-WORKDIR /src/FinanceApi
+COPY *.csproj .
+RUN dotnet restore
+COPY . .
 RUN dotnet publish -c Release -o /app/publish
 
 # שלב runtime
