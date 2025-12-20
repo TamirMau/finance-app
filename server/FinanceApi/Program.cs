@@ -110,8 +110,23 @@ builder.Services.AddCors(options =>
 });
 
 // JWT Authentication
-var jwtSecret = builder.Configuration["JWT:Secret"]
-    ?? "YourSuperSecretKeyForDevelopmentOnly-Minimum32Characters";
+var jwtSecret = builder.Configuration["JWT:Secret"];
+if (string.IsNullOrWhiteSpace(jwtSecret))
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        jwtSecret = "YourSuperSecretKeyForDevelopmentOnly-Minimum32Characters";
+        var devLogger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+        devLogger.LogWarning("JWT secret not configured; using development fallback. Set env var JWT__Secret in production.");
+    }
+    else
+    {
+        // Fail fast in non-development so misconfiguration is obvious
+        var fatalLogger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+        fatalLogger.LogCritical("JWT secret not configured. Set environment variable JWT__Secret and redeploy.");
+        throw new InvalidOperationException("JWT Secret not configured. Set environment variable JWT__Secret.");
+    }
+}
 var jwtIssuer = builder.Configuration["JWT:Issuer"] ?? "FinanceApp";
 var jwtAudience = builder.Configuration["JWT:Audience"] ?? "FinanceAppUsers";
 
