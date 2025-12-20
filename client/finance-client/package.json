@@ -2,10 +2,13 @@
   "name": "finance-client",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": ">=18 <21"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "build:prod": "ng build --configuration production"
   },
   "dependencies": {
