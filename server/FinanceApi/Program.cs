@@ -135,9 +135,21 @@ builder.Services.AddAuthorization();
 // Register storage services based on configuration
 var storageType = builder.Configuration["Storage:Type"] ?? "Json";
 
+// Resolve connection string with several fallbacks to support various env var names (Render uses ConnectionStrings__Default)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? builder.Configuration.GetConnectionString("Default")
+    ?? builder.Configuration["ConnectionStrings:Default"]
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__Default");
+
 if (storageType.Equals("Database", StringComparison.OrdinalIgnoreCase))
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        var loggerMissing = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+        loggerMissing.LogWarning("Database storage selected but no connection string was found in configuration or environment variables.");
+    }
+
     builder.Services.AddDbContext<FinanceDbContext>(options =>
         options.UseNpgsql(connectionString));
 
@@ -153,7 +165,6 @@ else
 builder.Services.AddHealthChecks();
 if (storageType.Equals("Database", StringComparison.OrdinalIgnoreCase))
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     if (!string.IsNullOrEmpty(connectionString))
     {
         builder.Services.AddHealthChecks()
