@@ -64,6 +64,14 @@ builder.Services.AddSwaggerGen(c =>
 var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>()
     ?? Array.Empty<string>();
 
+// Allow setting additional origins via environment variable CORS_ALLOWED_ORIGINS (comma-separated)
+var envOrigins = Environment.GetEnvironmentVariable("CORS_ALLOWED_ORIGINS");
+if (!string.IsNullOrEmpty(envOrigins))
+{
+    var extras = envOrigins.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+    allowedOrigins = allowedOrigins.Concat(extras).Distinct().ToArray();
+}
+
 builder.Services.AddCors(options =>
 {
     if (builder.Environment.IsDevelopment())
