@@ -216,4 +216,11 @@ logger.LogWarning("🚀 FinanceApi is running!");
 logger.LogWarning("📖 Swagger UI available at: https://localhost:{Port}/swagger".Replace("{Port}", port));
 logger.LogWarning("🌐 API Base URL: https://localhost:{Port}".Replace("{Port}", port));
 
+// Log effective CORS allowed origins on startup for easier debugging
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
+    startupLogger.LogInformation("CORS Allowed Origins: {Origins}", string.Join(", ", allowedOrigins));
+});
+
 app.Run();
